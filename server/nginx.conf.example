@@ -1,0 +1,7 @@
+# Defence in depth only; encrypted-at-rest storage remains mandatory.
+# Place inside the site's server block before general PHP/location handling.
+location ^~ /wp-content/uploads/dancevault-encrypted/ {
+    return 404;
+}
+# Do not cache admin-post.php password requests or download responses.
+# Existing server configuration must honour Cache-Control: private, no-store.
