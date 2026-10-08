@@ -12,7 +12,7 @@ if ($taskManifest -cne "$taskHash  $taskName`n") { throw 'Checksum mismatch' }
 Add-Type -AssemblyName System.IO.Compression
 $taskZip = [IO.Compression.ZipArchive]::new([IO.File]::OpenRead($taskPath))
 try {
-    $taskExpected = @('dancevault.php','src/crypto.php','README.md','LICENSE.md','server/nginx.conf.example','docs/branding/logo.svg','docs/branding/logo-monochrome.svg','docs/branding/logo.png','docs/branding/README.md')
+    $taskExpected = @('dancevault.php','src/crypto.php','README.md','AGENTS.md','CONTRIBUTING.md','LICENSE.md','server/nginx.conf.example','docs/branding/logo.svg','docs/branding/logo-monochrome.svg','docs/branding/logo.png','docs/branding/README.md')
     if ($taskZip.Entries.Count -ne $taskExpected.Count) { throw 'Unexpected archive entries' }
     foreach ($taskRelative in $taskExpected) {
         $taskEntry = $taskZip.GetEntry('dancevault/' + $taskRelative)

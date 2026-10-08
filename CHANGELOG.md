@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3 - 2026-10-08
+
+- Add explicit agent capability, improvement, validation and upstream PR guidance to the README and contributor instructions.
+
 ## 0.1.2 - 2026-10-08
 
 - Add an original tool-specific vector logo and PNG companion in the shared DanceFlow visual style.
