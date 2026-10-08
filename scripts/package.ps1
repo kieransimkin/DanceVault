@@ -13,7 +13,7 @@ if (Test-Path -LiteralPath $taskZipPath) { throw 'Package already exists. Preser
 $taskStream = [IO.File]::Open($taskZipPath, [IO.FileMode]::CreateNew)
 $taskZip = [IO.Compression.ZipArchive]::new($taskStream, [IO.Compression.ZipArchiveMode]::Create)
 try {
-    foreach ($taskRelative in @('dancevault.php','src/crypto.php','README.md','LICENSE.md','server/nginx.conf.example')) {
+    foreach ($taskRelative in @('dancevault.php','src/crypto.php','README.md','LICENSE.md','server/nginx.conf.example','docs/branding/logo.svg','docs/branding/logo-monochrome.svg','docs/branding/logo.png','docs/branding/README.md')) {
         $taskEntry = $taskZip.CreateEntry('dancevault/' + $taskRelative)
         $taskEntry.LastWriteTime = [DateTimeOffset]::new(2026,10,8,0,0,0,[TimeSpan]::Zero)
         $taskInput = [IO.File]::OpenRead((Join-Path $taskRoot $taskRelative))

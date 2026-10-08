@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">DanceVault logo</title>
+  <desc id="desc">Vault lock inside a shield: encrypted, password-controlled delivery. Original DanceFlow family mark by Kieran Simkin.</desc>
+  
+  <g fill="none" stroke="#171124" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"><path d="M64 26 94 38v24c0 21-16 33-30 40C50 95 34 83 34 62V38z"/><path d="M53 59V49a11 11 0 0 1 22 0v10M49 59h30v24H49z" stroke="#171124"/><path d="M64 69v6" stroke="#171124"/></g>
+</svg>

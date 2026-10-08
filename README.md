@@ -1,6 +1,13 @@
 # DanceVault
 
-DanceFlow's independent WordPress component for private, password-controlled file delivery. Experimental 0.1.1; live acceptance remains required before real private assets.
+[![DanceVault logo](https://raw.githubusercontent.com/kieransimkin/DanceVault/v0.1.2/docs/branding/logo.png)](https://kieransimkin.co.uk/danceflow/)
+
+By **[Kieran Simkin](https://kieransimkin.co.uk/)** · [DanceFlow ecosystem](https://kieransimkin.co.uk/danceflow/) · [Vector logo and usage guide](docs/branding/README.md).
+
+Experimental WordPress encrypted, password-controlled file delivery. Live acceptance pending. https://kieransimkin.co.uk/
+
+
+DanceFlow's independent WordPress component for private, password-controlled file delivery. Experimental 0.1.2; live acceptance remains required before real private assets.
 
 ## Security model
 

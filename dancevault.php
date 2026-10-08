@@ -1,10 +1,12 @@
 <?php
 /**
  * Plugin Name: DanceVault
- * Description: Password-controlled encrypted file delivery for the DanceFlow ecosystem.
- * Version: 0.1.1
+ * Description: Experimental WordPress encrypted, password-controlled file delivery. Live acceptance pending. https://kieransimkin.co.uk/
+ * Version: 0.1.2
  * Requires at least: 6.7
  * Requires PHP: 8.0
+ * Plugin URI: https://kieransimkin.co.uk/danceflow/
+ * Author URI: https://kieransimkin.co.uk/
  * Author: Kieran Simkin
  * License: GPL-2.0-or-later
  */
