@@ -1,9 +1,14 @@
 $ErrorActionPreference = 'Stop'
 $taskRoot = Split-Path $PSScriptRoot -Parent
+$taskSource = [IO.File]::ReadAllText((Join-Path $taskRoot 'dancevault.php'))
+$taskMatch = [regex]::Match($taskSource, '(?m)^ \* Version: ([0-9]+\.[0-9]+\.[0-9]+)\r?$')
+if (!$taskMatch.Success) { throw 'Missing plugin version' }
+$taskVersion = $taskMatch.Groups[1].Value
 $taskDist = Join-Path $taskRoot 'dist'
 New-Item -ItemType Directory -Force -Path $taskDist | Out-Null
 Add-Type -AssemblyName System.IO.Compression
-$taskZipPath = Join-Path $taskDist 'dancevault-0.1.0-wordpress.zip'
+$taskZipName = "dancevault-$taskVersion-wordpress.zip"
+$taskZipPath = Join-Path $taskDist $taskZipName
 if (Test-Path -LiteralPath $taskZipPath) { throw 'Package already exists. Preserve immutable candidates; use a fresh version.' }
 $taskStream = [IO.File]::Open($taskZipPath, [IO.FileMode]::CreateNew)
 $taskZip = [IO.Compression.ZipArchive]::new($taskStream, [IO.Compression.ZipArchiveMode]::Create)
@@ -17,5 +22,5 @@ try {
     }
 } finally { $taskZip.Dispose(); $taskStream.Dispose() }
 $taskHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $taskZipPath).Hash.ToLowerInvariant()
-[IO.File]::WriteAllText((Join-Path $taskDist 'SHA256SUMS.txt'), "$taskHash  dancevault-0.1.0-wordpress.zip`n", [Text.UTF8Encoding]::new($false))
+[IO.File]::WriteAllText((Join-Path $taskDist "SHA256SUMS-$taskVersion.txt"), "$taskHash  $taskZipName`n", [Text.UTF8Encoding]::new($false))
 Write-Output "$taskHash  $taskZipPath"

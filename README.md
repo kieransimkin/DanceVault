@@ -1,6 +1,6 @@
 # DanceVault
 
-DanceFlow's independent WordPress component for private, password-controlled file delivery. Candidate 0.1.0; unpublished and not approved for deployment until validation and matching GitHub release are verified.
+DanceFlow's independent WordPress component for private, password-controlled file delivery. Experimental 0.1.1; live acceptance remains required before real private assets.
 
 ## Security model
 
@@ -26,4 +26,10 @@ Before real use: exercise admin nonce/capability/HTTPS rejection, missing/wrong 
 
 Build with `powershell -File scripts/package.ps1`. The allowlisted package includes only plugin PHP, src, README, licence notice and server examples; archive timestamps are fixed. Match a source commit/tag and SHA256SUMS in a new GitHub release before installation.
 
-Validation on 8 October 2026: PHP 8.0.11 with sodium; both implementation files pass syntax checks, 60 cryptographic assertions and 9 isolated download-handler contract cases pass. Live WordPress upload/admin controls, Apache and nginx integration, response headers and hosting temporary-directory isolation remain unverified. Version 0.1.0 is experimental and must not handle real private assets until those acceptance gates pass.
+Validation on 8 October 2026: PHP 8.0.11 with sodium; both implementation files pass syntax checks, 60 cryptographic assertions and 9 isolated download-handler contract cases pass. Live WordPress upload/admin controls, Apache and nginx integration, response headers and hosting temporary-directory isolation remain unverified. This plugin is experimental and must not handle real private assets until those acceptance gates pass.
+
+## CI and release publication
+
+`.github/workflows/ci-release.yml` validates every master push, pull request and manual run. It checks sodium, lints PHP, runs synthetic contracts, builds an allowlisted ZIP and verifies every packaged file against source and checksums. Checkout is pinned and credentials are not persisted; pull requests receive read-only access. Tests never need live site credentials or private files.
+
+A fresh `vMAJOR.MINOR.PATCH` tag runs the same checks, requires the tag to match the plugin header, and publishes an experimental GitHub release with the exact ZIP and versioned checksum manifest. It downloads published assets again and verifies SHA-256. An existing release causes publication to fail rather than overwrite assets. Only the publication job receives repository write permission. Source commit identity is recorded in release notes. Branch pushes never publish releases; manual runs validate only. WordPress installation is deliberately manual and requires exact-package approval; no site credentials or automatic live deployment are configured. Real Apache/nginx integration is not yet part of this synthetic CI suite.
