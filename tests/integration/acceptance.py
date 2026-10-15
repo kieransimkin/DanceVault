@@ -209,14 +209,17 @@ def main():
     status, headers, body = ANON.request(link(identifier), {'password': PASSWORD})
     check(status == 429 and PAYLOAD[:100] not in body, 'failure limit also blocks correct password')
     no_cache(headers, 'rate limit')
-    ctl('clear-rate')
+    check(ctl('expire-rate')['expired'] > 0, 'rate limit has a persisted WordPress expiry')
     status, _, body = ANON.request(link(identifier), {'password': PASSWORD})
-    check(status == 200 and body == PAYLOAD, 'download recovers after transient quota reset')
+    check(status == 200 and body == PAYLOAD, 'WordPress expires the past-due transient and restores access')
     revoke = current_form(ADMIN, 'dancevault_revoke', identifier)
     status, _, _ = ADMIN.request('/wp-admin/admin-post.php', dict(revoke, _wpnonce='bad'))
     check(status == 403 and not ctl('state')['records'][identifier]['revoked'], 'revocation requires real nonce')
     status, _, _ = EDITOR.request('/wp-admin/admin-post.php', revoke)
     check(status == 403 and not ctl('state')['records'][identifier]['revoked'], 'revocation requires administrator capability')
+    malformed_revoke = {key: value for key, value in revoke.items() if key != 'id'}
+    status, _, _ = ADMIN.request('/wp-admin/admin-post.php', dict(malformed_revoke, **{'id[]': 'invalid'}))
+    check(status == 302 and not ctl('state')['records'][identifier]['revoked'], 'malformed revocation ID changes no record')
     status, _, _ = ADMIN.request('/wp-admin/admin-post.php', revoke)
     check(status == 302 and ctl('state')['records'][identifier]['revoked'], 'valid revocation persisted')
     status, _, body = ANON.request(link(identifier), {'password': PASSWORD})
@@ -229,6 +232,13 @@ def main():
               operation + ': rejected before any plaintext response')
         no_cache(headers, operation)
         no_temp(operation)
+    expired_session_form = current_form(ADMIN, 'dancevault_create')
+    before_session_test = set(ctl('state')['records'])
+    ctl('end-admin-sessions')
+    expired_session_form.update(label='expired session', vault_password=PASSWORD, days='7')
+    status, _, _ = ADMIN.request('/wp-admin/admin-post.php', expired_session_form, ('fixture.txt', b'synthetic session rejection'))
+    check(status in (302, 400, 403) and set(ctl('state')['records']) == before_session_test,
+          'revoked WordPress session cannot reuse its old upload nonce')
     for path in ('/public-control.txt', '/wp-content/uploads/public-control.txt'):
         status, _, body = ANON.request(path)
         check(status == 200 and body == b'Public media control; must remain unchanged.\n', path + ': public content unaffected')
@@ -245,7 +255,9 @@ if __name__ == '__main__':
         main()
         succeeded = True
     finally:
-        report = {'backend': BACKEND, 'wordpress': '7.1.3', 'php': '8.3', 'checks': CHECKS,
+        runtime = INITIAL if 'INITIAL' in globals() else {}
+        report = {'backend': BACKEND, 'wordpress': runtime.get('wordpress'), 'php': runtime.get('php'),
+                  'sodium': runtime.get('sodium'), 'checks': CHECKS,
                   'passed': succeeded and all(c['passed'] for c in CHECKS), 'count': len(CHECKS),
                   'fixture_sha256': hashlib.sha256(PAYLOAD).hexdigest(), 'fixture_bytes': len(PAYLOAD),
                   'tls': 'Real local TLS, localhost SAN, certificate explicitly trusted; verification enabled',

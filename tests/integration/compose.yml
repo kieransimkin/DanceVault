@@ -17,7 +17,7 @@ services:
       context: ../..
       dockerfile: tests/integration/Dockerfile
       args:
-        PHP_IMAGE: php:8.3-apache
+        PHP_IMAGE: php:${DV_PHP_VERSION:-8.3}-apache
     depends_on:
       db: {condition: service_healthy}
     ports: ['127.0.0.1:18880:80', '127.0.0.1:18843:443', '127.0.0.1:18844:444']
@@ -33,7 +33,7 @@ services:
       context: ../..
       dockerfile: tests/integration/Dockerfile
       args:
-        PHP_IMAGE: php:8.3-fpm
+        PHP_IMAGE: php:${DV_PHP_VERSION:-8.3}-fpm
     depends_on:
       db: {condition: service_healthy}
     volumes:

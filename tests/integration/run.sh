@@ -2,6 +2,10 @@
 set -euo pipefail
 backend="${1:?apache or nginx}"
 [[ "$backend" == apache || "$backend" == nginx ]]
+export DV_PHP_VERSION="${2:-8.3}"
+export DV_WORDPRESS_VERSION="${3:-7.1.3}"
+[[ "$DV_PHP_VERSION" =~ ^[0-9]+\.[0-9]+$ ]]
+[[ "$DV_WORDPRESS_VERSION" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 export DV_STATE="$root/tests/integration/.state/$backend"
 export COMPOSE_PROJECT_NAME="dancevault_${backend}_${GITHUB_RUN_ID:-local}"
@@ -14,10 +18,10 @@ cleanup() {
 trap cleanup EXIT
 curl --fail --silent --show-error --location https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar -o "$DV_STATE/wp-cli.phar"
 echo "ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  $DV_STATE/wp-cli.phar" | sha256sum -c -
-curl --fail --silent --show-error --location https://wordpress.org/wordpress-7.1.3.zip -o "$DV_STATE/core.zip"
+curl --fail --silent --show-error --location "https://wordpress.org/wordpress-$DV_WORDPRESS_VERSION.zip" -o "$DV_STATE/core.zip"
 unzip -q "$DV_STATE/core.zip" -d "$DV_STATE/core"
 cp -a "$DV_STATE/core/wordpress/." "$DV_STATE/www/"
-php "$DV_STATE/wp-cli.phar" core verify-checksums --path="$DV_STATE/www" --version=7.1.3
+php "$DV_STATE/wp-cli.phar" core verify-checksums --path="$DV_STATE/www" --version="$DV_WORDPRESS_VERSION"
 php "$DV_STATE/wp-cli.phar" config create --path="$DV_STATE/www" --dbname=vault_test --dbuser=vault_test --dbpass=synthetic-database-only --dbhost=db --skip-check --skip-salts
 openssl req -x509 -newkey rsa:2048 -sha256 -nodes -days 2 -keyout "$DV_STATE/tls/key.pem" -out "$DV_STATE/tls/cert.pem" -subj '/CN=localhost' -addext 'subjectAltName=DNS:localhost,IP:127.0.0.1' 2>/dev/null
 unzip -q "$root"/dist/dancevault-*-wordpress.zip -d "$DV_STATE/www/wp-content/plugins"
@@ -35,4 +39,11 @@ wp=("${compose[@]}" exec -T --user www-data "$service" php /tools/wp-cli.phar --
 "${wp[@]}" eval-file /harness/control.php setup
 "${wp[@]}" core version > "$DV_STATE/evidence/wordpress-version.txt"
 "${compose[@]}" images > "$DV_STATE/evidence/container-images.txt"
+docker inspect $("${compose[@]}" ps -q) --format '{{.Name}} {{.Config.Image}} {{.Image}}' > "$DV_STATE/evidence/container-digests.txt"
+"${compose[@]}" exec -T "$service" php --version > "$DV_STATE/evidence/php-version.txt"
+if [[ "$backend" == apache ]]; then
+    "${compose[@]}" exec -T apache apache2 -v > "$DV_STATE/evidence/server-version.txt"
+else
+    "${compose[@]}" exec -T nginx nginx -v > "$DV_STATE/evidence/server-version.txt" 2>&1
+fi
 python3 "$root/tests/integration/acceptance.py" "$backend" "$DV_STATE"

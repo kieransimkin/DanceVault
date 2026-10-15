@@ -41,8 +41,10 @@ Limit: 100 MiB, also subject to PHP `post_max_size`/`upload_max_filesize`, proxy
 
 ## Acceptance and development
 
-The maintained HTTP acceptance suite runs the exact built WordPress ZIP on
-WordPress 7.1.3 with PHP 8.3 behind both Apache and nginx/PHP-FPM. Run
+The maintained HTTP acceptance suite runs the exact built WordPress ZIP behind
+both Apache and nginx/PHP-FPM, at WordPress 6.7/PHP 8.0 and WordPress 7.1.3/PHP 8.3.
+The former verifies the declared compatibility floor, not a recommendation to
+deploy obsolete PHP. Run
 `bash tests/integration/run.sh apache` and `bash tests/integration/run.sh nginx`
 on Linux with Docker Compose, PHP CLI, Python 3, OpenSSL, curl, unzip and sudo,
 after building/verifying `dist/`. It creates disposable databases, synthetic
@@ -53,6 +55,9 @@ It stops its own containers on exit and stores reports under the ignored
 security audit or permission to install on a production site. The intentionally
 unprotected port 18844 exists only to verify the ciphertext boundary; do not use
 the test configuration on a real host. Both server checks are release gates.
+Optional second/third arguments select PHP and WordPress, for example
+`bash tests/integration/run.sh apache 8.0 6.7`. Reports record the actual runtime
+versions and container image identities; an interrupted run cannot report a pass.
 
 Run `php -l dancevault.php`, `php -l src/crypto.php`, `php tests/crypto.php`, `php tests/handlers.php`. Use only synthetic fixtures. Never commit songs, passwords, keys or live account records. The handler harness stubs WordPress APIs: it is not real WordPress, Apache or nginx integration evidence.
 

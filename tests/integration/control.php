@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+// WP-CLI eval-file wraps PHP source; strict_types cannot lead that eval wrapper.
 // CLI-only fixture control, mounted outside the served root and excluded from ZIPs.
 if (!defined('WP_CLI') || !WP_CLI) exit(1);
 $operation = $args[0] ?? '';
@@ -21,7 +21,8 @@ if ($operation === 'setup') {
     }
     $keyAutoload = $wpdb->get_var("SELECT autoload FROM {$wpdb->options} WHERE option_name='dancevault_key'");
     echo json_encode(['records' => $records, 'public_page' => get_option('dancevault_test_page_id'), 'attachments' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type='attachment'"),
-        'key_autoload' => $keyAutoload, 'system_temp' => sys_get_temp_dir(), 'upload_temp' => ini_get('upload_tmp_dir'),
+        'key_autoload' => $keyAutoload, 'wordpress' => get_bloginfo('version'), 'php' => PHP_VERSION,
+        'sodium' => SODIUM_LIBRARY_VERSION, 'system_temp' => sys_get_temp_dir(), 'upload_temp' => ini_get('upload_tmp_dir'),
         'temporary_files' => count(glob(sys_get_temp_dir() . '/*')), 'upload_temporary_files' => count(glob(ini_get('upload_tmp_dir') . '/*'))]);
 } elseif ($operation === 'http-auth') {
     $user = get_user_by('login', 'vault-admin');
@@ -36,6 +37,14 @@ if ($operation === 'setup') {
     global $wpdb;
     $names = $wpdb->get_col("SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE '_transient_dv_%'");
     foreach ($names as $name) delete_transient(substr($name, strlen('_transient_')));
+    echo json_encode(['ok' => true]);
+} elseif ($operation === 'expire-rate') {
+    global $wpdb;
+    $names = $wpdb->get_col("SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_dv_%'");
+    foreach ($names as $name) update_option($name, time() - 1, false);
+    echo json_encode(['expired' => count($names)]);
+} elseif ($operation === 'end-admin-sessions') {
+    WP_Session_Tokens::get_instance(get_user_by('login', 'vault-admin')->ID)->destroy_all();
     echo json_encode(['ok' => true]);
 } else {
     if (!preg_match('/\A[a-f0-9]{32}\z/D', $id)) throw new RuntimeException('Invalid fixture ID');
