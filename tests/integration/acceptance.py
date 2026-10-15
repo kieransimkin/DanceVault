@@ -256,7 +256,10 @@ if __name__ == '__main__':
         succeeded = True
     finally:
         runtime = INITIAL if 'INITIAL' in globals() else {}
+        packages = list((ROOT / 'dist').glob('dancevault-*-wordpress.zip'))
+        package_hash = hashlib.sha256(packages[0].read_bytes()).hexdigest() if len(packages) == 1 else None
         report = {'backend': BACKEND, 'wordpress': runtime.get('wordpress'), 'php': runtime.get('php'),
+                  'plugin_version': runtime.get('plugin_version'), 'package_sha256': package_hash,
                   'sodium': runtime.get('sodium'), 'checks': CHECKS,
                   'passed': succeeded and all(c['passed'] for c in CHECKS), 'count': len(CHECKS),
                   'fixture_sha256': hashlib.sha256(PAYLOAD).hexdigest(), 'fixture_bytes': len(PAYLOAD),

@@ -41,6 +41,9 @@ Limit: 100 MiB, also subject to PHP `post_max_size`/`upload_max_filesize`, proxy
 
 ## Acceptance and development
 
+See [hosting acceptance and operating requirements](docs/hosting-acceptance.md)
+for the complete test contract, reproducible matrix and destination-host checks.
+
 The maintained HTTP acceptance suite runs the exact built WordPress ZIP behind
 both Apache and nginx/PHP-FPM, at WordPress 6.7/PHP 8.0 and WordPress 7.1.3/PHP 8.3.
 The former verifies the declared compatibility floor, not a recommendation to
