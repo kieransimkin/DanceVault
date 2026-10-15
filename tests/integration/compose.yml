@@ -1,0 +1,53 @@
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: synthetic-root-only
+      MYSQL_DATABASE: vault_test
+      MYSQL_USER: vault_test
+      MYSQL_PASSWORD: synthetic-database-only
+    tmpfs: [/var/lib/mysql]
+    healthcheck:
+      test: [CMD, mysqladmin, ping, -h, localhost, -psynthetic-root-only]
+      interval: 2s
+      retries: 60
+  apache:
+    profiles: [apache]
+    build:
+      context: ../../..
+      dockerfile: tests/integration/Dockerfile
+      args:
+        PHP_IMAGE: php:8.3-apache
+    depends_on:
+      db: {condition: service_healthy}
+    ports: ['127.0.0.1:18880:80', '127.0.0.1:18843:443', '127.0.0.1:18844:444']
+    volumes:
+      - ${DV_STATE}/www:/var/www/html
+      - ${DV_STATE}/tls:/tls:ro
+      - ${DV_STATE}/wp-cli.phar:/tools/wp-cli.phar:ro
+      - ./control.php:/harness/control.php:ro
+      - ./apache.conf:/etc/apache2/sites-enabled/000-default.conf:ro
+  php:
+    profiles: [nginx]
+    build:
+      context: ../../..
+      dockerfile: tests/integration/Dockerfile
+      args:
+        PHP_IMAGE: php:8.3-fpm
+    depends_on:
+      db: {condition: service_healthy}
+    volumes:
+      - ${DV_STATE}/www:/var/www/html
+      - ${DV_STATE}/wp-cli.phar:/tools/wp-cli.phar:ro
+      - ./control.php:/harness/control.php:ro
+  nginx:
+    profiles: [nginx]
+    image: nginx:stable-alpine
+    depends_on: [php]
+    ports: ['127.0.0.1:18880:80', '127.0.0.1:18843:443', '127.0.0.1:18844:444']
+    volumes:
+      - ${DV_STATE}/www:/var/www/html:ro
+      - ${DV_STATE}/tls:/tls:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx-common.conf:/etc/nginx/dancevault-common.conf:ro
+      - ../../server/nginx.conf.example:/etc/nginx/dancevault-protection.conf:ro

@@ -1,5 +1,6 @@
 /dist/
 /private/
+/tests/integration/.state/
 *.dvlt
 *.wav
 *.mp3

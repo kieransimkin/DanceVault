@@ -36,6 +36,19 @@ Limit: 100 MiB, also subject to PHP `post_max_size`/`upload_max_filesize`, proxy
 
 ## Acceptance and development
 
+The maintained HTTP acceptance suite runs the exact built WordPress ZIP on
+WordPress 7.1.3 with PHP 8.3 behind both Apache and nginx/PHP-FPM. Run
+`bash tests/integration/run.sh apache` and `bash tests/integration/run.sh nginx`
+on Linux with Docker Compose, PHP CLI, Python 3, OpenSSL, curl, unzip and sudo,
+after building/verifying `dist/`. It creates disposable databases, synthetic
+accounts/files and a localhost TLS certificate explicitly trusted by the client;
+TLS verification remains enabled. Ports 18880, 18843 and 18844 must be free.
+It stops its own containers on exit and stores reports under the ignored
+`tests/integration/.state/`. This is isolated host integration, not an independent
+security audit or permission to install on a production site. The intentionally
+unprotected port 18844 exists only to verify the ciphertext boundary; do not use
+the test configuration on a real host. Both server checks are release gates.
+
 Run `php -l dancevault.php`, `php -l src/crypto.php`, `php tests/crypto.php`, `php tests/handlers.php`. Use only synthetic fixtures. Never commit songs, passwords, keys or live account records. The handler harness stubs WordPress APIs: it is not real WordPress, Apache or nginx integration evidence.
 
 Before real use: exercise admin nonce/capability/HTTPS rejection, missing/wrong password, failure limit, expiry, revocation, truncated/corrupt containers, full-byte download identity and no-cache headers through a running WordPress instance. Independently test Apache and nginx; local crypto tests alone are not those integrations. Check signed-out direct ciphertext URLs cannot yield plaintext, and public EPK/downloads remain unchanged. Do not upload a real private asset until these gates pass. No external security audit has yet been performed.
@@ -48,4 +61,4 @@ Validation on 8 October 2026: PHP 8.0.11 with sodium; both implementation files 
 
 `.github/workflows/ci-release.yml` validates every master push, pull request and manual run. It checks sodium, lints PHP, runs synthetic contracts, builds an allowlisted ZIP and verifies every packaged file against source and checksums. Checkout is pinned and credentials are not persisted; pull requests receive read-only access. Tests never need live site credentials or private files.
 
-A fresh `vMAJOR.MINOR.PATCH` tag runs the same checks, requires the tag to match the plugin header, and publishes an experimental GitHub release with the exact ZIP and versioned checksum manifest. It downloads published assets again and verifies SHA-256. An existing release causes publication to fail rather than overwrite assets. Only the publication job receives repository write permission. Source commit identity is recorded in release notes. Branch pushes never publish releases; manual runs validate only. WordPress installation is deliberately manual and requires exact-package approval; no site credentials or automatic live deployment are configured. Real Apache/nginx integration is not yet part of this synthetic CI suite.
+A fresh `vMAJOR.MINOR.PATCH` tag runs the same checks, requires the tag to match the plugin header, and publishes an experimental GitHub release with the exact ZIP and versioned checksum manifest. It downloads published assets again and verifies SHA-256. An existing release causes publication to fail rather than overwrite assets. Only the publication job receives repository write permission. Source commit identity is recorded in release notes. Branch pushes never publish releases; manual runs validate only. WordPress installation is deliberately manual and requires exact-package approval; no site credentials or automatic live deployment are configured. The new Apache/nginx hosting matrix additionally tests the validated ZIP before the publisher can run; inspect its actual results rather than inferring acceptance from configuration.
