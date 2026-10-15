@@ -14,7 +14,7 @@ services:
   apache:
     profiles: [apache]
     build:
-      context: ../../..
+      context: ../..
       dockerfile: tests/integration/Dockerfile
       args:
         PHP_IMAGE: php:8.3-apache
@@ -30,7 +30,7 @@ services:
   php:
     profiles: [nginx]
     build:
-      context: ../../..
+      context: ../..
       dockerfile: tests/integration/Dockerfile
       args:
         PHP_IMAGE: php:8.3-fpm

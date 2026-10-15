@@ -7,7 +7,7 @@ By **[Kieran Simkin](https://kieransimkin.co.uk/)** · [DanceFlow ecosystem](htt
 Experimental WordPress encrypted, password-controlled file delivery. Live acceptance pending. https://kieransimkin.co.uk/
 
 
-DanceFlow's independent WordPress component for private, password-controlled file delivery. Experimental 0.1.3; live acceptance remains required before real private assets.
+DanceFlow's independent WordPress component for private, password-controlled file delivery. Candidate 1.0.0; hosting acceptance is still pending and the candidate is not a published stable release. Real private assets remain excluded until acceptance passes and the exact package is released.
 
 
 ## Agents and contributors
@@ -25,6 +25,11 @@ Uploads never enter the public Media Library. PHP's uploaded temporary file is r
 On Apache, a directory-scoped `.htaccess` adds direct-access denial. On nginx, ask the host to add the supplied scoped rule. Encryption is the confidentiality boundary even when server rules are absent: a direct static URL must never return the original bytes. This is not a claim that nginx reads `.htaccess`. No other uploads are restricted.
 
 Downloads use an explicit WordPress POST handler, with no admin bypass, non-cacheable responses, generic errors, expiry, revocation, password hashing and 10 failed attempts per download/IP pseudonym per 15 minutes. No passwords, raw IPs or successful-download tracking are logged. Limits are best-effort WordPress transient controls, not a substitute for edge rate limiting. Shared NATs may share the failure limit. Distributed guessing and database compromise are outside this control; use strong generated passwords.
+
+Malformed array-valued labels, passwords and IDs are treated as invalid fields,
+without PHP array-to-string warnings. A download submission such as
+`password[]=invalid` is denied; it cannot supply a recipient password or bypass
+authorization. Valid scalar form values keep the same behavior.
 
 The full container and stored size/SHA-256 are verified before any plaintext is emitted. Decryption uses a private system temporary file that is closed/deleted on request completion. The hosting administrator must keep PHP upload/temp storage outside served web roots. No plaintext fallback; sodium/HTTPS failures disable uploads. Back up the database key together with encrypted files; losing it makes recovery impossible. Database compromise plus ciphertext compromise exposes files. This plugin is not protection against a compromised WordPress administrator, PHP host or recipient forwarding.
 
