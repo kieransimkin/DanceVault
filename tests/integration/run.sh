@@ -12,7 +12,7 @@ cleanup() {
     "${compose[@]}" down --volumes --remove-orphans >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
-curl --fail --silent --show-error --location https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-2.12.0.phar -o "$DV_STATE/wp-cli.phar"
+curl --fail --silent --show-error --location https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar -o "$DV_STATE/wp-cli.phar"
 echo "ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  $DV_STATE/wp-cli.phar" | sha256sum -c -
 curl --fail --silent --show-error --location https://wordpress.org/wordpress-7.1.3.zip -o "$DV_STATE/core.zip"
 unzip -q "$DV_STATE/core.zip" -d "$DV_STATE/core"
