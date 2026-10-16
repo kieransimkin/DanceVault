@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: DanceVault
- * Description: Experimental WordPress encrypted, password-controlled file delivery. Live acceptance pending. https://kieransimkin.co.uk/
- * Version: 0.1.3
+ * Description: WordPress encrypted, password-controlled file delivery. https://kieransimkin.co.uk/
+ * Version: 1.0.0
  * Requires at least: 6.7
  * Requires PHP: 8.0
  * Plugin URI: https://kieransimkin.co.uk/danceflow/
@@ -70,6 +70,12 @@ final class DanceVault_Plugin {
         if (!is_ssl()) wp_die('HTTPS is required.', '', ['response' => 400]);
     }
 
+    private static function request_string(array $fields, string $name): string {
+        $value = $fields[$name] ?? '';
+        // PHP form/query parsers can supply arrays; never cast them to strings.
+        return is_string($value) ? wp_unslash($value) : '';
+    }
+
     public static function admin(): void {
         if (!current_user_can('manage_options')) return;
         echo '<div class="wrap"><h1>DanceVault</h1><p>Encrypted file delivery. Keep passwords in private correspondence, not page content. No public Media Library attachment is created.</p>';
@@ -104,9 +110,9 @@ final class DanceVault_Plugin {
         $path = '';
         $created = false;
         try {
-            $password = (string) wp_unslash($_POST['vault_password'] ?? '');
+            $password = self::request_string($_POST, 'vault_password');
             $days = filter_var($_POST['days'] ?? '', FILTER_VALIDATE_INT);
-            $label = sanitize_text_field(wp_unslash($_POST['label'] ?? ''));
+            $label = sanitize_text_field(self::request_string($_POST, 'label'));
             if (strlen($password) < 16 || strlen($password) > 128 || $days === false || $days < 1 || $days > 90 || $label === '' || strlen($label) > 480) throw new RuntimeException('Invalid fields.');
             $file = $_FILES['vault_file'] ?? [];
             if (($file['error'] ?? -1) !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'] ?? '')) throw new RuntimeException('Upload failed.');
@@ -139,7 +145,7 @@ final class DanceVault_Plugin {
 
     public static function revoke(): void {
         self::guard('dancevault_revoke');
-        $id = (string) ($_POST['id'] ?? '');
+        $id = self::request_string($_POST, 'id');
         if (preg_match('/\A[a-f0-9]{32}\z/D', $id)) {
             $row = get_option('dancevault_record_' . $id, null);
             if (is_array($row)) {
@@ -151,6 +157,12 @@ final class DanceVault_Plugin {
     }
 
     public static function download(): void {
+        // Older WordPress wp_die() sends nocache_headers again for errors.
+        // Scope this filter to this terminating download request, not public pages.
+        add_filter('nocache_headers', static function (array $headers): array {
+            $headers['Cache-Control'] = 'private, no-store, max-age=0';
+            return $headers;
+        }, PHP_INT_MAX);
         nocache_headers();
         header('Cache-Control: private, no-store, max-age=0');
         header('X-Robots-Tag: noindex, nofollow, noarchive');
@@ -158,7 +170,7 @@ final class DanceVault_Plugin {
         header("Content-Security-Policy: default-src 'none'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
         header('Referrer-Policy: no-referrer');
         if (!is_ssl()) wp_die('HTTPS required.', '', ['response' => 400]);
-        $id = (string) ($_GET['id'] ?? '');
+        $id = self::request_string($_GET, 'id');
         $row = preg_match('/\A[a-f0-9]{32}\z/D', $id) ? get_option('dancevault_record_' . $id, null) : null;
         if (!$row || $row['revoked'] || time() >= $row['expires']) wp_die('Download unavailable.', '', ['response' => 404]);
         $rate = 'dv_' . hash_hmac('sha256', $id . '|' . ($_SERVER['REMOTE_ADDR'] ?? ''), wp_salt('auth'));
@@ -169,7 +181,7 @@ final class DanceVault_Plugin {
             echo '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Protected download — DanceVault</title><body><main><h1>Protected download</h1><form method="post"><label>Password <input type="password" name="password" maxlength="128" required autocomplete="off"></label><button type="submit">Download file</button></form></main></body></html>';
             exit;
         }
-        $password = (string) wp_unslash($_POST['password'] ?? '');
+        $password = self::request_string($_POST, 'password');
         if (strlen($password) > 128 || !wp_check_password($password, $row['password_hash'])) {
             set_transient($rate, $failures + 1, 15 * MINUTE_IN_SECONDS);
             wp_die('Incorrect password.', '', ['response' => 403]);

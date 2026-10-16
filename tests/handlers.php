@@ -17,6 +17,7 @@ if (($argv[1] ?? '') === '--case') {
         rmdir($fixture . '/dancevault-encrypted'); rmdir($fixture);
     });
     function add_action(...$args) {}
+    function add_filter(...$args) {}
     function nocache_headers() {}
     function is_ssl() { return $GLOBALS['case'] !== 'http'; }
     function wp_die($message, $title = '', $args = []) { echo 'DENY:' . $args['response']; exit; }
@@ -37,15 +38,17 @@ if (($argv[1] ?? '') === '--case') {
     if ($case === 'corrupt') file_put_contents($fixture . '/dancevault-encrypted/' . $id . '.dvlt', 'bad');
     if ($case === 'mismatch') $options['dancevault_record_' . $id]['sha256'] = str_repeat('0', 64);
     $_GET = ['id' => $id]; $_POST = ['password' => $case === 'wrong' ? 'wrong' : 'test-password-123456'];
+    if ($case === 'array-password') $_POST['password'] = ['invalid'];
+    if ($case === 'array-id') $_GET['id'] = ['invalid'];
     $_SERVER['REQUEST_METHOD'] = 'POST';
     DanceVault_Plugin::download();
     exit;
 }
-$cases = ['http' => 'DENY:400', 'missing' => 'DENY:404', 'expired' => 'DENY:404', 'revoked' => 'DENY:404', 'limited' => 'DENY:429', 'wrong' => 'DENY:403', 'corrupt' => 'DENY:503', 'mismatch' => 'DENY:503', 'valid' => 'synthetic private fixture'];
+$cases = ['http' => 'DENY:400', 'missing' => 'DENY:404', 'expired' => 'DENY:404', 'revoked' => 'DENY:404', 'limited' => 'DENY:429', 'wrong' => 'DENY:403', 'corrupt' => 'DENY:503', 'mismatch' => 'DENY:503', 'valid' => 'synthetic private fixture', 'array-password' => 'DENY:403', 'array-id' => 'DENY:404'];
 foreach ($cases as $case => $expected) {
     $process = proc_open([PHP_BINARY, __FILE__, '--case', $case], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
     $actual = stream_get_contents($pipes[1]); $stderr = stream_get_contents($pipes[2]);
     fclose($pipes[1]); fclose($pipes[2]); $exit = proc_close($process);
     if ($actual !== $expected || $exit !== 0 || $stderr !== '') throw new RuntimeException($case . ': ' . $actual . ' ' . $stderr);
 }
-echo 'PASS 9 download-handler contract cases' . PHP_EOL;
+echo 'PASS ' . count($cases) . ' download-handler contract cases' . PHP_EOL;
