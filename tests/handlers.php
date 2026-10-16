@@ -19,6 +19,7 @@ if (($argv[1] ?? '') === '--case') {
     function add_action(...$args) {}
     function add_filter(...$args) {}
     function nocache_headers() {}
+    function esc_html__($text, $domain) { return htmlspecialchars($text, ENT_QUOTES, 'UTF-8'); }
     function is_ssl() { return $GLOBALS['case'] !== 'http'; }
     function wp_die($message, $title = '', $args = []) { echo 'DENY:' . $args['response']; exit; }
     function get_option($name, $default = false) { return $GLOBALS['options'][$name] ?? $default; }
@@ -26,6 +27,7 @@ if (($argv[1] ?? '') === '--case') {
     function set_transient(...$args) { return true; }
     function wp_salt($name) { return 'synthetic-test-salt'; }
     function wp_unslash($text) { return $text; }
+    function sanitize_text_field($text) { return strip_tags($text); }
     function wp_check_password($plain, $hash) { return password_verify($plain, $hash); }
     function wp_upload_dir() { return ['basedir' => $GLOBALS['fixture']]; }
     function wp_mkdir_p($dir) { return is_dir($dir); }

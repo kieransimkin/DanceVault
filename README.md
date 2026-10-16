@@ -4,10 +4,10 @@
 
 By **[Kieran Simkin](https://kieransimkin.co.uk/)** · [DanceFlow ecosystem](https://kieransimkin.co.uk/danceflow/) · [Vector logo and usage guide](docs/branding/README.md).
 
-WordPress encrypted, password-controlled file delivery. https://kieransimkin.co.uk/
+Encrypted, password-controlled file downloads with expiry and revocation. https://kieransimkin.co.uk/
 
 
-DanceFlow's independent WordPress component for private, password-controlled file delivery. Version 1.0.0 adds tested hosting acceptance and hardened request handling. Install the matching versioned GitHub release ZIP and validate your actual host before private assets.
+DanceFlow's independent WordPress component for private, password-controlled file delivery. Version 1.0.1 adds WordPress.org directory metadata, a translatable interface and official Plugin Check to the existing hosting acceptance gates. Install the matching versioned release ZIP and validate your actual host before private assets.
 
 
 ## Agents and contributors
@@ -44,6 +44,14 @@ Limit: 100 MiB, also subject to PHP `post_max_size`/`upload_max_filesize`, proxy
 
 ## Acceptance and development
 
+The WordPress.org [readme.txt](readme.txt) describes installation, host requirements,
+privacy, retained data and the complete included functionality. Interface strings use
+the `dancevault` text domain and escaped output; WordPress can supply language packs.
+The administrator record-name list uses a short object-cache entry, invalidated by
+successful uploads. Actual records still use the Options API and are read fresh.
+Directory submission, human approval and a public listing are separate states; a
+GitHub release does not establish any of them. See [directory review](docs/wordpress-org.md).
+
 See [hosting acceptance and operating requirements](docs/hosting-acceptance.md)
 for the complete test contract, reproducible matrix and destination-host checks.
 
@@ -65,11 +73,11 @@ Optional second/third arguments select PHP and WordPress, for example
 `bash tests/integration/run.sh apache 8.0 6.7`. Reports record the actual runtime
 versions and container image identities; an interrupted run cannot report a pass.
 
-Run `php -l dancevault.php`, `php -l src/crypto.php`, `php tests/crypto.php`, `php tests/handlers.php`. Use only synthetic fixtures. Never commit songs, passwords, keys or live account records. The handler harness stubs WordPress APIs: it is not real WordPress, Apache or nginx integration evidence.
+Run `php -l dancevault.php`, `php -l src/crypto.php`, `php tests/crypto.php`, `php tests/handlers.php`, and `php tests/interface.php`. Use only synthetic fixtures. Never commit songs, passwords, keys or live account records. The handler/interface harnesses stub WordPress APIs: they are not real WordPress, Apache or nginx integration evidence.
 
 Before real use: exercise admin nonce/capability/HTTPS rejection, missing/wrong password, failure limit, expiry, revocation, truncated/corrupt containers, full-byte download identity and no-cache headers through a running WordPress instance. Independently test Apache and nginx; local crypto tests alone are not those integrations. Check signed-out direct ciphertext URLs cannot yield plaintext, and public EPK/downloads remain unchanged. Do not upload a real private asset until these gates pass. No external security audit has yet been performed.
 
-Build with `powershell -File scripts/package.ps1`. The allowlisted package includes only plugin PHP, src, README, licence notice and server examples; archive timestamps are fixed. Match a source commit/tag and SHA256SUMS in a new GitHub release before installation.
+Build with `powershell -File scripts/package.ps1`. The 15-file allowlisted package includes plugin PHP, directory/readme and contribution guidance, complete licence text, changelog, hosting guide, server example and original branding; archive timestamps are fixed. Tests, build tools, credentials and CI state are excluded. Match a source commit/tag and SHA256SUMS in a new GitHub release before installation.
 
 Historical baseline on 8 October 2026: PHP 8.0.11 with sodium; syntax checks, 60 cryptographic assertions and nine stubbed handler cases passed, while real hosting acceptance was pending.
 
@@ -84,10 +92,10 @@ audit or production installation is claimed.
 
 ## CI and release publication
 
-`.github/workflows/ci-release.yml` validates every master push, pull request and manual run. It checks sodium, lints PHP, runs synthetic contracts, builds an allowlisted ZIP and verifies every packaged file against source and checksums. Checkout is pinned and credentials are not persisted; pull requests receive read-only access. Tests never need live site credentials or private files.
+`.github/workflows/ci-release.yml` validates every master push, pull request and manual run. It checks sodium, lints PHP, runs synthetic contracts, builds an allowlisted ZIP and verifies every packaged file against source and checksums. Official WordPress Plugin Check scans that exact extracted package using the plugin-repository category. Its results are retained, including contextual warnings. Checkout is pinned and credentials are not persisted; pull requests receive read-only access. Tests never need live site credentials or private files.
 
 A fresh `vMAJOR.MINOR.PATCH` tag runs the same checks and must match the plugin
-header. All four hosting jobs and the complete-report/package-hash gate must
+header and directory readme's stable tag. Official Plugin Check, all four hosting jobs and the complete-report/package-hash gate must
 pass before publication. The publisher downloads that verified bundle and
 publishes its exact tested ZIP, checksum manifest and acceptance summary.
 Versions below 1.0 remain prereleases; the 1.0 series publishes stable releases.

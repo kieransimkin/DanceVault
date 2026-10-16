@@ -4,6 +4,8 @@ $taskRoot = Split-Path $PSScriptRoot -Parent
 $taskSource = [IO.File]::ReadAllText((Join-Path $taskRoot 'dancevault.php'))
 $taskVersion = [regex]::Match($taskSource, '(?m)^ \* Version: ([0-9]+\.[0-9]+\.[0-9]+)\r?$').Groups[1].Value
 if (!$taskVersion -or ($ExpectedTag -and $ExpectedTag -cne "v$taskVersion")) { throw 'Tag/version mismatch' }
+$taskReadme = [IO.File]::ReadAllText((Join-Path $taskRoot 'readme.txt'))
+if (![regex]::IsMatch($taskReadme, '(?m)^Stable tag: ' + [regex]::Escape($taskVersion) + '\r?$')) { throw 'Directory readme/version mismatch' }
 $taskName = "dancevault-$taskVersion-wordpress.zip"
 $taskPath = Join-Path $taskRoot "dist/$taskName"
 $taskHash = (Get-FileHash -LiteralPath $taskPath -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -12,7 +14,7 @@ if ($taskManifest -cne "$taskHash  $taskName`n") { throw 'Checksum mismatch' }
 Add-Type -AssemblyName System.IO.Compression
 $taskZip = [IO.Compression.ZipArchive]::new([IO.File]::OpenRead($taskPath))
 try {
-    $taskExpected = @('dancevault.php','src/crypto.php','README.md','AGENTS.md','CONTRIBUTING.md','LICENSE.md','CHANGELOG.md','docs/hosting-acceptance.md','server/nginx.conf.example','docs/branding/logo.svg','docs/branding/logo-monochrome.svg','docs/branding/logo.png','docs/branding/README.md')
+    $taskExpected = @('dancevault.php','src/crypto.php','readme.txt','license.txt','README.md','AGENTS.md','CONTRIBUTING.md','LICENSE.md','CHANGELOG.md','docs/hosting-acceptance.md','server/nginx.conf.example','docs/branding/logo.svg','docs/branding/logo-monochrome.svg','docs/branding/logo.png','docs/branding/README.md')
     if ($taskZip.Entries.Count -ne $taskExpected.Count) { throw 'Unexpected archive entries' }
     foreach ($taskRelative in $taskExpected) {
         $taskEntry = $taskZip.GetEntry('dancevault/' + $taskRelative)

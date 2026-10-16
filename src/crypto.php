@@ -10,6 +10,7 @@ final class Crypto {
 
     private static function write($handle, string $bytes): void {
         while ($bytes !== '') {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- WordPress-independent authenticated stream; WP_Filesystem has no bounded stream API.
             $n = fwrite($handle, $bytes);
             if ($n === false || $n === 0) throw new \RuntimeException('Storage write failed.');
             $bytes = substr($bytes, $n);
@@ -19,6 +20,7 @@ final class Crypto {
     private static function read($handle, int $length): string {
         $bytes = '';
         while (strlen($bytes) < $length && !feof($handle)) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- Read only the bounded authenticated container segment requested by the parser.
             $part = fread($handle, $length - strlen($bytes));
             if ($part === false) throw new \RuntimeException('Storage read failed.');
             $bytes .= $part;
@@ -33,6 +35,7 @@ final class Crypto {
         $hash = hash_init('sha256');
         $size = 0;
         while (!feof($input)) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- Bounded plaintext input stream; never copy a whole private file into memory.
             $plain = fread($input, self::CHUNK);
             if ($plain === false) throw new \RuntimeException('Input read failed.');
             if ($plain === '') break;
@@ -60,6 +63,7 @@ final class Crypto {
             if ($result === false) throw new \RuntimeException('Authentication failed.');
             [$plain, $tag] = $result;
             if ($tag === SODIUM_CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_FINAL) {
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- Reject even one trailing byte after the authenticated final record.
                 if ($plain !== '' || fread($input, 1) !== '') throw new \RuntimeException('Invalid final record.');
                 sodium_memzero($state);
                 return ['size' => $size, 'sha256' => hash_final($hash)];
