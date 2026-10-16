@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 - 2026-10-16
+
+- Prepare the WordPress.org readme, privacy/retention disclosure, unique plugin metadata and complete GPLv2 licence text.
+- Make the administrator and recipient interface translatable using the dancevault text domain, preserving escaped output.
+- Gate publication on official Plugin Check of the exact built ZIP, in addition to all four hosting combinations and existing crypto/handler/package checks.
+- Preserve the encryption format, existing keys/records and destination-host acceptance requirements. Directory submission and approval are separate from GitHub release publication and production installation.
+
 ## 1.0.0 - 2026-10-16
 
 - Add real TLS/WordPress/Apache and nginx acceptance at the declared compatibility floor and current tested WordPress/PHP versions, using the exact packaged ZIP and synthetic fixtures.
