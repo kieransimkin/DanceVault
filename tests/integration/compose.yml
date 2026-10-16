@@ -8,7 +8,7 @@ services:
       MYSQL_PASSWORD: synthetic-database-only
     tmpfs: [/var/lib/mysql]
     healthcheck:
-      test: [CMD, mysqladmin, ping, -h, localhost, -psynthetic-root-only]
+      test: [CMD, mysql, --protocol=TCP, -h, '127.0.0.1', -u, vault_test, -psynthetic-database-only, vault_test, -e, 'SELECT 1']
       interval: 2s
       retries: 60
   apache:

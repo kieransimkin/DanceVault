@@ -91,3 +91,17 @@ revoked ciphertext remains for explicit administrator retention/cleanup; there
 is no automatic destructive purge or email service.
 
 Website: https://kieransimkin.co.uk/danceflow/
+
+## Potential problems
+
+- A MySQL process ping is not application readiness. The compose health check
+  executes a TCP query with the actual disposable database/user, after image
+  initialization; WordPress installation must not race the bootstrap server.
+- Apache's enabled SSL module already declares port 443. The fixture adds only
+  the separate negative-test listener 444; duplicating 443 prevents startup.
+- WP-CLI `eval-file` wraps source in an eval scope. The CLI-only fixture helper
+  therefore omits a leading `strict_types` declaration; production files retain
+  strict typing. Empty record maps are explicitly JSON objects, not lists.
+- Use the official versioned WP-CLI release asset and verify its pinned checksum.
+  A missing download or failed WordPress core checksum stops acceptance before
+  loading the plugin. Neither is a passing application test.
