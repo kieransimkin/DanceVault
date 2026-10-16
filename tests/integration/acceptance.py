@@ -171,6 +171,9 @@ def main():
     status, _, _ = ANON.request(HTTP + '/wp-admin/admin-post.php', http_fields, ('fixture.txt', b'http synthetic fixture'), {'Cookie': auth['cookie']})
     check(status == 400 and ctl('state')['records'] == {}, 'HTTP upload rejected with real authenticated admin and valid nonce')
     for name, changes, payload in [('short password', {'vault_password': 'short'}, b'x'),
+                                    ('array password', {'vault_password[]': 'invalid'}, b'x'),
+                                    ('array label', {'label[]': 'invalid'}, b'x'),
+                                    ('array expiry', {'days[]': 'invalid'}, b'x'),
                                     ('invalid expiry', {'days': '91'}, b'x'),
                                     ('empty upload', {}, b''), ('oversized upload', {}, b'x' * (104857600 + 1))]:
         status, _, _ = ADMIN.request('/wp-admin/admin-post.php', dict(valid, **changes), ('fixture.txt', payload))

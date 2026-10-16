@@ -30,6 +30,9 @@ Malformed array-valued labels, passwords and IDs are treated as invalid fields,
 without PHP array-to-string warnings. A download submission such as
 `password[]=invalid` is denied; it cannot supply a recipient password or bypass
 authorization. Valid scalar form values keep the same behavior.
+Download error handling also preserves `Cache-Control: private, no-store` when
+WordPress sends its own error-page headers, including on WordPress 6.7. This
+request-scoped protection does not change the cache policy of public pages.
 
 The full container and stored size/SHA-256 are verified before any plaintext is emitted. Decryption uses a private system temporary file that is closed/deleted on request completion. The hosting administrator must keep PHP upload/temp storage outside served web roots. No plaintext fallback; sodium/HTTPS failures disable uploads. Back up the database key together with encrypted files; losing it makes recovery impossible. Database compromise plus ciphertext compromise exposes files. This plugin is not protection against a compromised WordPress administrator, PHP host or recipient forwarding.
 

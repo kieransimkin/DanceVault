@@ -17,6 +17,7 @@ if (($argv[1] ?? '') === '--case') {
         rmdir($fixture . '/dancevault-encrypted'); rmdir($fixture);
     });
     function add_action(...$args) {}
+    function add_filter(...$args) {}
     function nocache_headers() {}
     function is_ssl() { return $GLOBALS['case'] !== 'http'; }
     function wp_die($message, $title = '', $args = []) { echo 'DENY:' . $args['response']; exit; }

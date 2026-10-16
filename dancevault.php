@@ -157,6 +157,12 @@ final class DanceVault_Plugin {
     }
 
     public static function download(): void {
+        // Older WordPress wp_die() sends nocache_headers again for errors.
+        // Scope this filter to this terminating download request, not public pages.
+        add_filter('nocache_headers', static function (array $headers): array {
+            $headers['Cache-Control'] = 'private, no-store, max-age=0';
+            return $headers;
+        }, PHP_INT_MAX);
         nocache_headers();
         header('Cache-Control: private, no-store, max-age=0');
         header('X-Robots-Tag: noindex, nofollow, noarchive');
