@@ -41,8 +41,9 @@ Real isolated WordPress/TLS acceptance of the exact attached ZIP:
 {rows}
 
 SHA256: `{digest}`. Crypto, malformed-request, packaging and all hosting gates passed.
-The 1.0 series fixes array-valued request handling and retains the existing
-encryption format. Host-specific configuration acceptance is required before
+The 1.0 series fixes array-valued request handling and preserves private/no-store
+error headers on older WordPress, retaining the existing encryption format.
+Host-specific configuration acceptance is required before
 private assets; this is not a production installation or independent security
 audit. See the included hosting guide and changelog.
 """

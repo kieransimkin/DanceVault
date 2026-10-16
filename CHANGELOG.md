@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 candidate - 2026-10-16
+## 1.0.0 - 2026-10-16
 
 - Add real TLS/WordPress/Apache and nginx acceptance at the declared compatibility floor and current tested WordPress/PHP versions, using the exact packaged ZIP and synthetic fixtures.
 - Reject array-valued passwords, labels and IDs without PHP warnings.

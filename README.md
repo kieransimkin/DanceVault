@@ -4,10 +4,10 @@
 
 By **[Kieran Simkin](https://kieransimkin.co.uk/)** · [DanceFlow ecosystem](https://kieransimkin.co.uk/danceflow/) · [Vector logo and usage guide](docs/branding/README.md).
 
-Experimental WordPress encrypted, password-controlled file delivery. Live acceptance pending. https://kieransimkin.co.uk/
+WordPress encrypted, password-controlled file delivery. https://kieransimkin.co.uk/
 
 
-DanceFlow's independent WordPress component for private, password-controlled file delivery. Candidate 1.0.0; hosting acceptance is still pending and the candidate is not a published stable release. Real private assets remain excluded until acceptance passes and the exact package is released.
+DanceFlow's independent WordPress component for private, password-controlled file delivery. Version 1.0.0 adds tested hosting acceptance and hardened request handling. Install the matching versioned GitHub release ZIP and validate your actual host before private assets.
 
 
 ## Agents and contributors
@@ -71,10 +71,31 @@ Before real use: exercise admin nonce/capability/HTTPS rejection, missing/wrong 
 
 Build with `powershell -File scripts/package.ps1`. The allowlisted package includes only plugin PHP, src, README, licence notice and server examples; archive timestamps are fixed. Match a source commit/tag and SHA256SUMS in a new GitHub release before installation.
 
-Validation on 8 October 2026: PHP 8.0.11 with sodium; both implementation files pass syntax checks, 60 cryptographic assertions and 9 isolated download-handler contract cases pass. Live WordPress upload/admin controls, Apache and nginx integration, response headers and hosting temporary-directory isolation remain unverified. This plugin is experimental and must not handle real private assets until those acceptance gates pass.
+Historical baseline on 8 October 2026: PHP 8.0.11 with sodium; syntax checks, 60 cryptographic assertions and nine stubbed handler cases passed, while real hosting acceptance was pending.
+
+Validation on 16 October 2026: all four real TLS/HTTP hosting combinations passed
+142 checks each (568 total): Apache and nginx/PHP-FPM on WordPress 6.7/PHP
+8.0.30 and WordPress 7.1.3/PHP 8.3.35, with sodium 1.0.18. The 60 crypto and
+11 handler cases pass too. CI records the actual versions, image identities,
+exact source and tested ZIP hash; the release-evidence job verifies all four
+complete reports. These are isolated synthetic WordPress integrations. Repeat
+destination-host acceptance before real private files; no external security
+audit or production installation is claimed.
 
 ## CI and release publication
 
 `.github/workflows/ci-release.yml` validates every master push, pull request and manual run. It checks sodium, lints PHP, runs synthetic contracts, builds an allowlisted ZIP and verifies every packaged file against source and checksums. Checkout is pinned and credentials are not persisted; pull requests receive read-only access. Tests never need live site credentials or private files.
 
-A fresh `vMAJOR.MINOR.PATCH` tag runs the same checks, requires the tag to match the plugin header, and publishes an experimental GitHub release with the exact ZIP and versioned checksum manifest. It downloads published assets again and verifies SHA-256. An existing release causes publication to fail rather than overwrite assets. Only the publication job receives repository write permission. Source commit identity is recorded in release notes. Branch pushes never publish releases; manual runs validate only. WordPress installation is deliberately manual and requires exact-package approval; no site credentials or automatic live deployment are configured. The new Apache/nginx hosting matrix additionally tests the validated ZIP before the publisher can run; inspect its actual results rather than inferring acceptance from configuration.
+A fresh `vMAJOR.MINOR.PATCH` tag runs the same checks and must match the plugin
+header. All four hosting jobs and the complete-report/package-hash gate must
+pass before publication. The publisher downloads that verified bundle and
+publishes its exact tested ZIP, checksum manifest and acceptance summary.
+Versions below 1.0 remain prereleases; the 1.0 series publishes stable releases.
+Published assets are downloaded again and SHA-256 checked. Existing releases
+fail closed rather than being overwritten. Only the publisher receives write
+permission, and source identity appears in the release evidence.
+
+Branch pushes never publish releases; manual runs validate only. WordPress
+installation remains manual and requires exact-package approval. No site
+credentials or automatic production deployment are configured. A source commit
+or passing CI artifact alone is not a published GitHub release.

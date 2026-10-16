@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: DanceVault
- * Description: Experimental WordPress encrypted, password-controlled file delivery. Live acceptance pending. https://kieransimkin.co.uk/
+ * Description: WordPress encrypted, password-controlled file delivery. https://kieransimkin.co.uk/
  * Version: 1.0.0
  * Requires at least: 6.7
  * Requires PHP: 8.0
