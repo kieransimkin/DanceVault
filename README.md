@@ -9,14 +9,21 @@ Encrypted, password-controlled file downloads with expiry and revocation. https:
 
 DanceFlow's independent WordPress component for private, password-controlled file delivery. Version 1.0.1 adds WordPress.org directory metadata, a translatable interface and official Plugin Check to the existing hosting acceptance gates. Install the matching versioned release ZIP and validate your actual host before private assets.
 
+## Before every new workflow
 
-## Agents and contributors
+Check the latest stable official release and the actual installed/imported version before starting; do not infer currency from a directory name or a development checkout. Read the current release notes, tagged capability documentation and relevant Potential problems. Use the [DanceFlow release preflight](https://github.com/kieransimkin/DanceFlow/blob/main/docs/workflows/release-preflight.md) and [complete capability references](https://github.com/kieransimkin/DanceFlow/blob/main/docs/capabilities/index.md).
 
-Agents using DanceVault should inspect its available capabilities, use them fully where they fit the task, and look for useful improvements wherever possible. When a required feature is missing, or a reusable reliability, usability, performance or documentation gap is found, improve this tool rather than maintaining a separate workaround. If no worthwhile change is justified, explain why.
+People and agents should consider the full ecosystem, use all capabilities that materially serve the task, compose supported files/APIs, and improve a demonstrated reusable gap in its canonical tool. Record why no worthwhile change is justified when that is the result. Keep independent tool identities, compatibility, source clocks, privacy, model/download costs and publication/deployment permissions intact. Store weights and model-specific caches in the owning project's ignored `models/`.
 
-Submit every improvement as a pull request to [DanceVault](https://github.com/kieransimkin/DanceVault/pulls), with relevant tests, documentation and a reproducible example. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) for the contribution and validation workflow.
+## Find your route
 
-Project website: [https://kieransimkin.co.uk/danceflow/](https://kieransimkin.co.uk/danceflow/).
+[Usage](#usage) · [Security model](#security-model) · [Acceptance and development](#acceptance-and-development) · [CI and release publication](#ci-and-release-publication) · [Agents and contributors](#agents-and-contributors)
+
+## Usage
+
+Install the exact released `dancevault/` WordPress ZIP. Tools → DanceVault: choose a file, label, unique 16–128-character password and expiry (1–90 days, default 7). Record source SHA-256; compare it to the displayed upload hash. Copy the password-controlled URL into private correspondence, never a raw storage URL. Revoke access from Tools → DanceVault. Revocation/expiry blocks new requests, not a download already running or a recipient's local copy. Expired/revoked ciphertext is retained for explicit administrator cleanup; no automatic destructive deletion or uninstall purge.
+
+Limit: 100 MiB, also subject to PHP `post_max_size`/`upload_max_filesize`, proxy limits, temporary disk and request timeout. No chunk uploader, resume/Range, email sending, public attachment, external storage or account creation. Server-native acceleration is deliberately omitted to avoid authentication bypass. No existing EPK changes.
 
 ## Security model
 
@@ -35,12 +42,6 @@ WordPress sends its own error-page headers, including on WordPress 6.7. This
 request-scoped protection does not change the cache policy of public pages.
 
 The full container and stored size/SHA-256 are verified before any plaintext is emitted. Decryption uses a private system temporary file that is closed/deleted on request completion. The hosting administrator must keep PHP upload/temp storage outside served web roots. No plaintext fallback; sodium/HTTPS failures disable uploads. Back up the database key together with encrypted files; losing it makes recovery impossible. Database compromise plus ciphertext compromise exposes files. This plugin is not protection against a compromised WordPress administrator, PHP host or recipient forwarding.
-
-## Usage
-
-Install the exact released `dancevault/` WordPress ZIP. Tools → DanceVault: choose a file, label, unique 16–128-character password and expiry (1–90 days, default 7). Record source SHA-256; compare it to the displayed upload hash. Copy the password-controlled URL into private correspondence, never a raw storage URL. Revoke access from Tools → DanceVault. Revocation/expiry blocks new requests, not a download already running or a recipient's local copy. Expired/revoked ciphertext is retained for explicit administrator cleanup; no automatic destructive deletion or uninstall purge.
-
-Limit: 100 MiB, also subject to PHP `post_max_size`/`upload_max_filesize`, proxy limits, temporary disk and request timeout. No chunk uploader, resume/Range, email sending, public attachment, external storage or account creation. Server-native acceleration is deliberately omitted to avoid authentication bypass. No existing EPK changes.
 
 ## Acceptance and development
 
@@ -107,3 +108,11 @@ Branch pushes never publish releases; manual runs validate only. WordPress
 installation remains manual and requires exact-package approval. No site
 credentials or automatic production deployment are configured. A source commit
 or passing CI artifact alone is not a published GitHub release.
+
+## Agents and contributors
+
+Agents using DanceVault should inspect its available capabilities, use them fully where they fit the task, and look for useful improvements wherever possible. When a required feature is missing, or a reusable reliability, usability, performance or documentation gap is found, improve this tool rather than maintaining a separate workaround. If no worthwhile change is justified, explain why.
+
+Submit every improvement as a pull request to [DanceVault](https://github.com/kieransimkin/DanceVault/pulls), with relevant tests, documentation and a reproducible example. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) for the contribution and validation workflow.
+
+Project website: [https://kieransimkin.co.uk/danceflow/](https://kieransimkin.co.uk/danceflow/).
