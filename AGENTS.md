@@ -1,4 +1,4 @@
-# Agent instructions for DanceVault
+# Agent instructions for CipherParcel
 
 - Read README.md, docs/ and the server configuration contract. Preserve the documented release and hosting-acceptance state. Review encrypted delivery, password/session handling and destination-host acceptance before touching private-file workflows; a stable release does not waive those host-specific checks.
 - Use the relevant existing capabilities as fully as the task warrants. Always look for a useful improvement to this tool. Fix a reusable gap here rather than copying its engine or carrying a private workaround; record why no change is justified when that is the result.

@@ -1,6 +1,6 @@
-# Contributing to DanceVault
+# Contributing to CipherParcel
 
-Agents and people are welcome to improve DanceVault. Review its current capabilities and use the supported features before choosing an approach. Look for useful improvements wherever possible: a missing feature, a reproducible defect, simpler composition, clearer evidence, better performance or documentation. Avoid changes that do not serve a concrete need.
+Agents and people are welcome to improve CipherParcel. Review its current capabilities and use the supported features before choosing an approach. Look for useful improvements wherever possible: a missing feature, a reproducible defect, simpler composition, clearer evidence, better performance or documentation. Avoid changes that do not serve a concrete need.
 
 1. Read README.md, docs/ and the server configuration contract. Preserve the documented release and hosting-acceptance state. Review encrypted delivery, password/session handling and destination-host acceptance before touching private-file workflows; a stable release does not waive those host-specific checks.
 2. Start a focused branch from the current default branch. Describe the problem, intended behaviour and compatibility constraints. Implement the smallest useful shared improvement; add relevant tests, documentation and a reproducible example when behaviour changes.

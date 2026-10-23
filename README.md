@@ -1,13 +1,13 @@
-# DanceVault
+# CipherParcel
 
-[![DanceVault logo](https://raw.githubusercontent.com/kieransimkin/DanceVault/v0.1.2/docs/branding/logo.png)](https://kieransimkin.co.uk/danceflow/)
+[![CipherParcel logo](docs/branding/logo.png)](https://kieransimkin.co.uk/danceflow/)
 
 By **[Kieran Simkin](https://kieransimkin.co.uk/)** · [DanceFlow ecosystem](https://kieransimkin.co.uk/danceflow/) · [Vector logo and usage guide](docs/branding/README.md).
 
 Encrypted, password-controlled file downloads with expiry and revocation. https://kieransimkin.co.uk/
 
 
-DanceFlow's independent WordPress component for private, password-controlled file delivery. Version 1.0.1 adds WordPress.org directory metadata, a translatable interface and official Plugin Check to the existing hosting acceptance gates. Install the matching versioned release ZIP and validate your actual host before private assets.
+DanceFlow's independent WordPress component for private, password-controlled file delivery. Version 1.0.2 adopts the distinct public name CipherParcel and `cipherparcel` package slug while preserving the established DanceVault storage, route and encrypted-container compatibility identifiers. Install the matching versioned release ZIP and validate your actual host before private assets.
 
 ## Before every new workflow
 
@@ -21,7 +21,7 @@ People and agents should consider the full ecosystem, use all capabilities that 
 
 ## Usage
 
-Install the exact released `dancevault/` WordPress ZIP. Tools → DanceVault: choose a file, label, unique 16–128-character password and expiry (1–90 days, default 7). Record source SHA-256; compare it to the displayed upload hash. Copy the password-controlled URL into private correspondence, never a raw storage URL. Revoke access from Tools → DanceVault. Revocation/expiry blocks new requests, not a download already running or a recipient's local copy. Expired/revoked ciphertext is retained for explicit administrator cleanup; no automatic destructive deletion or uninstall purge.
+Install the exact released `cipherparcel/` WordPress ZIP. Tools → CipherParcel: choose a file, label, unique 16–128-character password and expiry (1–90 days, default 7). Record source SHA-256; compare it to the displayed upload hash. Copy the password-controlled URL into private correspondence, never a raw storage URL. Revoke access from Tools → CipherParcel. Revocation/expiry blocks new requests, not a download already running or a recipient's local copy. Expired/revoked ciphertext is retained for explicit administrator cleanup; no automatic destructive deletion or uninstall purge.
 
 Limit: 100 MiB, also subject to PHP `post_max_size`/`upload_max_filesize`, proxy limits, temporary disk and request timeout. No chunk uploader, resume/Range, email sending, public attachment, external storage or account creation. Server-native acceleration is deliberately omitted to avoid authentication bypass. No existing EPK changes.
 
@@ -47,7 +47,7 @@ The full container and stored size/SHA-256 are verified before any plaintext is 
 
 The WordPress.org [readme.txt](readme.txt) describes installation, host requirements,
 privacy, retained data and the complete included functionality. Interface strings use
-the `dancevault` text domain and escaped output; WordPress can supply language packs.
+the `cipherparcel` text domain and escaped output; WordPress can supply language packs.
 The administrator record-name list uses a short object-cache entry, invalidated by
 successful uploads. Actual records still use the Options API and are read fresh.
 Directory submission, human approval and a public listing are separate states; a
@@ -74,7 +74,7 @@ Optional second/third arguments select PHP and WordPress, for example
 `bash tests/integration/run.sh apache 8.0 6.7`. Reports record the actual runtime
 versions and container image identities; an interrupted run cannot report a pass.
 
-Run `php -l dancevault.php`, `php -l src/crypto.php`, `php tests/crypto.php`, `php tests/handlers.php`, and `php tests/interface.php`. Use only synthetic fixtures. Never commit songs, passwords, keys or live account records. The handler/interface harnesses stub WordPress APIs: they are not real WordPress, Apache or nginx integration evidence.
+Run `php -l dancevault.php`, `php -l src/crypto.php`, `php tests/crypto.php`, `php tests/handlers.php`, `php tests/interface.php`, and `php tests/identity.php`. Before build or release work, run `pwsh ./scripts/test-temp-access.ps1 -Parent ./dist`; it verifies create, read, atomic rename and cleanup with project-local temporary data. Use only synthetic fixtures. Never commit songs, passwords, keys or live account records. The handler/interface harnesses stub WordPress APIs: they are not real WordPress, Apache or nginx integration evidence.
 
 Before real use: exercise admin nonce/capability/HTTPS rejection, missing/wrong password, failure limit, expiry, revocation, truncated/corrupt containers, full-byte download identity and no-cache headers through a running WordPress instance. Independently test Apache and nginx; local crypto tests alone are not those integrations. Check signed-out direct ciphertext URLs cannot yield plaintext, and public EPK/downloads remain unchanged. Do not upload a real private asset until these gates pass. No external security audit has yet been performed.
 
@@ -111,8 +111,8 @@ or passing CI artifact alone is not a published GitHub release.
 
 ## Agents and contributors
 
-Agents using DanceVault should inspect its available capabilities, use them fully where they fit the task, and look for useful improvements wherever possible. When a required feature is missing, or a reusable reliability, usability, performance or documentation gap is found, improve this tool rather than maintaining a separate workaround. If no worthwhile change is justified, explain why.
+Agents using CipherParcel should inspect its available capabilities, use them fully where they fit the task, and look for useful improvements wherever possible. When a required feature is missing, or a reusable reliability, usability, performance or documentation gap is found, improve this tool rather than maintaining a separate workaround. If no worthwhile change is justified, explain why.
 
-Submit every improvement as a pull request to [DanceVault](https://github.com/kieransimkin/DanceVault/pulls), with relevant tests, documentation and a reproducible example. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) for the contribution and validation workflow.
+Submit every improvement as a pull request to the [CipherParcel source repository](https://github.com/kieransimkin/DanceVault/pulls), with relevant tests, documentation and a reproducible example. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) for the contribution and validation workflow.
 
 Project website: [https://kieransimkin.co.uk/danceflow/](https://kieransimkin.co.uk/danceflow/).

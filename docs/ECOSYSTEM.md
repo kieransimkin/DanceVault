@@ -1,4 +1,4 @@
-# Use DanceVault with the DanceFlow ecosystem
+# Use CipherParcel with the DanceFlow ecosystem
 
 ## Before every new workflow
 
@@ -14,7 +14,7 @@ People and agents should consider the full ecosystem, use all capabilities that 
 - **Verify access:** Test authorised recipient behaviour and protected storage without exposing private data, passwords or plaintext fallback. Directory publication, plugin installation and private delivery are distinct actions.
 
 
-Read the [full released feature references](https://github.com/kieransimkin/DanceFlow/blob/main/docs/capabilities/dancevault.md) for exact commands, schemas, examples and limits. The tool remains independently useful. Consider StemLab, DanceRudiments, FrameRudiments, DanceMoves, KeywordMoves, RasterMoves, LikenessForge, PixelCue, PrismMoves, ThumbMoves, React Timeline Sequence, EPK Social Metadata and DanceVault wherever their supported capabilities serve the task. Short Shifter remains an independent project outside DanceFlow.
+Read the [full released feature references](https://github.com/kieransimkin/DanceFlow/blob/main/docs/capabilities/dancevault.md) for exact commands, schemas, examples and limits. The tool remains independently useful. Consider StemLab, DanceRudiments, FrameRudiments, DanceMoves, KeywordMoves, RasterMoves, LikenessForge, PixelCue, PrismMoves, ThumbMoves, React Timeline Sequence, EPK Social Metadata and CipherParcel wherever their supported capabilities serve the task. The published compatibility contract retains the established DanceVault internal identifiers. Short Shifter remains an independent project outside DanceFlow.
 
 ## Contribute a reusable improvement
 

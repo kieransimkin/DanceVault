@@ -1,10 +1,10 @@
-=== DanceVault ===
+=== CipherParcel ===
 Contributors: kieransimkin0
 Tags: encrypted downloads, password protection, private files, file sharing, download expiry
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Encrypted, password-controlled file downloads with expiry and revocation. https:
 
 == Description ==
 
-DanceVault lets WordPress administrators share a file through a password-controlled download link, without creating a public Media Library attachment. Files are encrypted with PHP libsodium before storage. Recipients enter a separate password; passwords are never included in download URLs.
+CipherParcel lets WordPress administrators share a file through a password-controlled download link, without creating a public Media Library attachment. Files are encrypted with PHP libsodium before storage. Recipients enter a separate password; passwords are never included in download URLs.
 
 * Encrypted file storage using authenticated XChaCha20-Poly1305 secretstream containers.
 * Administrator-only uploads and revocation, protected by WordPress capabilities and nonces.
@@ -37,15 +37,15 @@ Expired and revoked ciphertext and records remain for explicit administrator ret
 
 = Agents and contributions =
 
-Agents should inspect all relevant capabilities, use the tool where it fits, and improve reusable gaps where useful. Submit improvements as [pull requests to DanceVault](https://github.com/kieransimkin/DanceVault/pulls), with relevant verification, updated documentation and a reproducible example. Read the included AGENTS.md and CONTRIBUTING.md. Do not place private files, passwords, keys or account data in source, issues or public reports.
+Agents should inspect all relevant capabilities, use the tool where it fits, and improve reusable gaps where useful. Submit improvements as [pull requests to the CipherParcel source repository](https://github.com/kieransimkin/DanceVault/pulls), with relevant verification, updated documentation and a reproducible example. Read the included AGENTS.md and CONTRIBUTING.md. Do not place private files, passwords, keys or account data in source, issues or public reports.
 
 == Installation ==
 
-1. Install the matching DanceVault release ZIP and activate DanceVault. This does not upload any files automatically.
+1. Install the matching CipherParcel release ZIP and activate CipherParcel. This does not upload any files automatically.
 2. Require HTTPS and PHP sodium. Keep PHP upload and system temporary directories outside every served root. Keep PHP error display off and ensure enough private temporary disk space.
 3. On Apache, permit the generated directory-scoped Require all denied rule or configure an equivalent. On nginx, adapt server/nginx.conf.example to the actual uploads path, aliases and origins. Exclude the password/download endpoint from page, proxy and CDN caching.
 4. Follow docs/hosting-acceptance.md using a synthetic file: verify byte/hash identity, wrong-password denial, expiry/revocation, direct-URL protection, temporary-file cleanup and unaffected public files.
-5. Open Tools -> DanceVault, choose a file, label, unique 16-128-character password and expiry. Share the recipient URL and password privately, preferably using separate channels.
+5. Open Tools -> CipherParcel, choose a file, label, unique 16-128-character password and expiry. Share the recipient URL and password privately, preferably using separate channels.
 
 == Frequently Asked Questions ==
 
@@ -71,6 +71,11 @@ No. The maintained suite verifies real isolated WordPress TLS/HTTP behaviour on 
 
 == Changelog ==
 
+= 1.0.2 =
+* Adopt the distinct public name CipherParcel and requested directory slug cipherparcel after a fresh WordPress.org, GitHub and exact-web name check.
+* Preserve the existing encrypted container format, database keys, record names, routes and stored files for DanceVault compatibility.
+* Add a reusable project-local temporary-directory preflight to the build and release checks.
+
 = 1.0.1 =
 * Add directory metadata, translated interface strings, privacy/retention guidance, complete licence text and an official Plugin Check release gate.
 * Preserve the encrypted container format, existing keys/records and tested authentication, expiry and revocation behaviour.
@@ -79,6 +84,9 @@ No. The maintained suite verifies real isolated WordPress TLS/HTTP behaviour on 
 * Add real WordPress/Apache/nginx hosting acceptance, scalar request validation and private error-response cache headers.
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+Public identity changes to CipherParcel. Existing DanceVault encrypted files, database keys, record names and administrator routes remain compatible.
 
 = 1.0.1 =
 Directory preparation and interface translation support. Existing encrypted files and database keys remain compatible. Repeat destination-host acceptance before private-file use.

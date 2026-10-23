@@ -14,7 +14,7 @@ if (($argv[1] ?? '') === '--case') {
     function current_user_can($capability) { return $GLOBALS['case'] !== 'denied-admin'; }
     function is_ssl() { return true; }
     function __($text, $domain) {
-        if ($domain !== 'dancevault') throw new RuntimeException('Wrong translation domain');
+        if ($domain !== 'cipherparcel') throw new RuntimeException('Wrong translation domain');
         return ['Label' => '<script>label</script>', 'Password' => 'Cyfrinair',
             'Download file' => 'Lawrlwytho <strong>ffeil</strong>'][$text] ?? $text;
     }
