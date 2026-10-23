@@ -21,7 +21,7 @@ if ($operation === 'setup') {
     }
     $keyAutoload = $wpdb->get_var("SELECT autoload FROM {$wpdb->options} WHERE option_name='dancevault_key'");
     echo json_encode(['records' => (object) $records, 'public_page' => get_option('dancevault_test_page_id'), 'attachments' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type='attachment'"),
-        'key_autoload' => $keyAutoload, 'plugin_version' => get_file_data(WP_PLUGIN_DIR . '/dancevault/dancevault.php', ['Version' => 'Version'])['Version'], 'wordpress' => get_bloginfo('version'), 'php' => PHP_VERSION,
+        'key_autoload' => $keyAutoload, 'plugin_version' => get_file_data(WP_PLUGIN_DIR . '/cipherparcel/dancevault.php', ['Version' => 'Version'])['Version'], 'wordpress' => get_bloginfo('version'), 'php' => PHP_VERSION,
         'sodium' => SODIUM_LIBRARY_VERSION, 'system_temp' => sys_get_temp_dir(), 'upload_temp' => ini_get('upload_tmp_dir'),
         'temporary_files' => count(glob(sys_get_temp_dir() . '/*')), 'upload_temporary_files' => count(glob(ini_get('upload_tmp_dir') . '/*'))]);
 } elseif ($operation === 'http-auth') {

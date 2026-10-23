@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2 - 2026-10-24
+
+- Rename the public plugin identity to CipherParcel and package it under the requested `cipherparcel` directory slug after fresh WordPress.org, GitHub and exact-web availability checks.
+- Preserve the DanceVault encrypted container, PHP classes, database keys, record names, request actions, administrator route and storage directory so existing private records remain compatible.
+- Align the WordPress text domain, directory readme, official Plugin Check target, release asset name and visual documentation with CipherParcel.
+- Add a reusable project-local temporary-directory access preflight and identity regression test to the exact release checks.
+
 ## 1.0.1 - 2026-10-16
 
 - Prepare the WordPress.org readme, privacy/retention disclosure, unique plugin metadata and complete GPLv2 licence text.

@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: DanceVault
+ * Plugin Name: CipherParcel
  * Description: Encrypted, password-controlled file downloads with expiry and revocation. https://kieransimkin.co.uk/
- * Version: 1.0.1
+ * Version: 1.0.2
  * Requires at least: 6.7
  * Requires PHP: 8.0
  * Plugin URI: https://github.com/kieransimkin/DanceVault
@@ -10,7 +10,7 @@
  * Author: Kieran Simkin
  * License: GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * Text Domain: dancevault
+ * Text Domain: cipherparcel
  */
 declare(strict_types=1);
 if (!defined('ABSPATH')) exit;
@@ -21,7 +21,7 @@ final class DanceVault_Plugin {
 
     public static function boot(): void {
         add_action('admin_menu', static function (): void {
-            add_management_page(__('DanceVault', 'dancevault'), __('DanceVault', 'dancevault'), 'manage_options', 'dancevault', [self::class, 'admin']);
+            add_management_page(__('CipherParcel', 'cipherparcel'), __('CipherParcel', 'cipherparcel'), 'manage_options', 'dancevault', [self::class, 'admin']);
         });
         add_action('admin_post_dancevault_create', [self::class, 'create']);
         add_action('admin_post_dancevault_revoke', [self::class, 'revoke']);
@@ -73,8 +73,8 @@ final class DanceVault_Plugin {
     }
 
     private static function guard(): void {
-        if (!current_user_can('manage_options')) wp_die(esc_html__('Forbidden', 'dancevault'), '', ['response' => 403]);
-        if (!is_ssl()) wp_die(esc_html__('HTTPS is required.', 'dancevault'), '', ['response' => 400]);
+        if (!current_user_can('manage_options')) wp_die(esc_html__('Forbidden', 'cipherparcel'), '', ['response' => 403]);
+        if (!is_ssl()) wp_die(esc_html__('HTTPS is required.', 'cipherparcel'), '', ['response' => 400]);
     }
 
     private static function request_string(array $fields, string $name): string {
@@ -85,30 +85,30 @@ final class DanceVault_Plugin {
 
     public static function admin(): void {
         if (!current_user_can('manage_options')) return;
-        echo '<div class="wrap"><h1>' . esc_html__('DanceVault', 'dancevault') . '</h1><p>' . esc_html__('Encrypted file delivery. Keep passwords in private correspondence, not page content. No public Media Library attachment is created.', 'dancevault') . '</p>';
+        echo '<div class="wrap"><h1>' . esc_html__('CipherParcel', 'cipherparcel') . '</h1><p>' . esc_html__('Encrypted file delivery. Keep passwords in private correspondence, not page content. No public Media Library attachment is created.', 'cipherparcel') . '</p>';
         if (!extension_loaded('sodium') || !is_ssl()) {
-            echo '<p>' . esc_html__('Uploads disabled: HTTPS and PHP sodium are required.', 'dancevault') . '</p></div>';
+            echo '<p>' . esc_html__('Uploads disabled: HTTPS and PHP sodium are required.', 'cipherparcel') . '</p></div>';
             return;
         }
         echo '<form method="post" enctype="multipart/form-data" action="' . esc_url(admin_url('admin-post.php')) . '">';
         wp_nonce_field('dancevault_create');
-        echo '<input type="hidden" name="action" value="dancevault_create"><p><label>' . esc_html__('Label', 'dancevault') . ' <input name="label" required maxlength="120"></label></p>';
-        echo '<p><label>' . esc_html__('File (maximum 100 MiB)', 'dancevault') . ' <input type="file" name="vault_file" required></label></p>';
-        echo '<p><label>' . esc_html__('Password (16–128 characters)', 'dancevault') . ' <input type="password" name="vault_password" minlength="16" maxlength="128" autocomplete="new-password" required></label></p>';
-        echo '<p><label>' . esc_html__('Expires after days', 'dancevault') . ' <input type="number" name="days" min="1" max="90" value="7" required></label></p>';
-        submit_button(__('Create protected download', 'dancevault'));
-        echo '</form><h2>' . esc_html__('Downloads', 'dancevault') . '</h2>';
+        echo '<input type="hidden" name="action" value="dancevault_create"><p><label>' . esc_html__('Label', 'cipherparcel') . ' <input name="label" required maxlength="120"></label></p>';
+        echo '<p><label>' . esc_html__('File (maximum 100 MiB)', 'cipherparcel') . ' <input type="file" name="vault_file" required></label></p>';
+        echo '<p><label>' . esc_html__('Password (16–128 characters)', 'cipherparcel') . ' <input type="password" name="vault_password" minlength="16" maxlength="128" autocomplete="new-password" required></label></p>';
+        echo '<p><label>' . esc_html__('Expires after days', 'cipherparcel') . ' <input type="number" name="days" min="1" max="90" value="7" required></label></p>';
+        submit_button(__('Create protected download', 'cipherparcel'));
+        echo '</form><h2>' . esc_html__('Downloads', 'cipherparcel') . '</h2>';
         foreach (self::records() as $id => $row) {
             $url = add_query_arg(['action' => 'dancevault_download', 'id' => $id], admin_url('admin-post.php'));
             echo '<section><h3>' . esc_html($row['label']) . '</h3><p>' . esc_html($row['filename']) . ' — ';
             /* translators: 1: file size in bytes, 2: UTC expiry date, 3: active or revoked status. */
-            printf(esc_html__('%1$s bytes; expires %2$s UTC; %3$s', 'dancevault'), esc_html((string) $row['size']), esc_html(gmdate('Y-m-d H:i:s', $row['expires'])), $row['revoked'] ? esc_html__('revoked', 'dancevault') : esc_html__('active', 'dancevault'));
-            echo '</p><p>' . esc_html__('SHA-256:', 'dancevault') . ' <code>' . esc_html($row['sha256']) . '</code></p><p><a href="' . esc_url($url) . '">' . esc_html__('Password-controlled download', 'dancevault') . '</a></p>';
+            printf(esc_html__('%1$s bytes; expires %2$s UTC; %3$s', 'cipherparcel'), esc_html((string) $row['size']), esc_html(gmdate('Y-m-d H:i:s', $row['expires'])), $row['revoked'] ? esc_html__('revoked', 'cipherparcel') : esc_html__('active', 'cipherparcel'));
+            echo '</p><p>' . esc_html__('SHA-256:', 'cipherparcel') . ' <code>' . esc_html($row['sha256']) . '</code></p><p><a href="' . esc_url($url) . '">' . esc_html__('Password-controlled download', 'cipherparcel') . '</a></p>';
             if (!$row['revoked']) {
                 echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
                 wp_nonce_field('dancevault_revoke');
                 echo '<input type="hidden" name="action" value="dancevault_revoke"><input type="hidden" name="id" value="' . esc_attr($id) . '">';
-                submit_button(__('Revoke access', 'dancevault'), 'secondary');
+                submit_button(__('Revoke access', 'cipherparcel'), 'secondary');
                 echo '</form>';
             }
             echo '</section>';
@@ -164,7 +164,7 @@ final class DanceVault_Plugin {
             // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Release an acquired stream on failure.
             if (is_resource($output)) fclose($output);
             if ($created && $path !== '' && is_file($path)) wp_delete_file($path);
-            wp_die(esc_html__('Protected upload failed. No download was created. Check PHP upload limits, sodium and storage.', 'dancevault'), '', ['response' => 400]);
+            wp_die(esc_html__('Protected upload failed. No download was created. Check PHP upload limits, sodium and storage.', 'cipherparcel'), '', ['response' => 400]);
         }
     }
 
@@ -176,7 +176,7 @@ final class DanceVault_Plugin {
             $row = get_option('dancevault_record_' . $id, null);
             if (is_array($row)) {
                 $row['revoked'] = true;
-                if (!update_option('dancevault_record_' . $id, $row, false) && !get_option('dancevault_record_' . $id)['revoked']) wp_die(esc_html__('Revocation failed.', 'dancevault'), '', ['response' => 500]);
+                if (!update_option('dancevault_record_' . $id, $row, false) && !get_option('dancevault_record_' . $id)['revoked']) wp_die(esc_html__('Revocation failed.', 'cipherparcel'), '', ['response' => 500]);
             }
         }
         wp_safe_redirect(admin_url('tools.php?page=dancevault')); exit;
@@ -195,26 +195,26 @@ final class DanceVault_Plugin {
         header('X-Content-Type-Options: nosniff');
         header("Content-Security-Policy: default-src 'none'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
         header('Referrer-Policy: no-referrer');
-        if (!is_ssl()) wp_die(esc_html__('HTTPS required.', 'dancevault'), '', ['response' => 400]);
+        if (!is_ssl()) wp_die(esc_html__('HTTPS required.', 'cipherparcel'), '', ['response' => 400]);
         // Public recipient route: the per-file password authenticates every download; it does not perform administrator mutations.
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- A public GET displays only the password form, never file contents or private metadata.
         $id = self::request_string($_GET, 'id');
         $row = preg_match('/\A[a-f0-9]{32}\z/D', $id) ? get_option('dancevault_record_' . $id, null) : null;
-        if (!$row || $row['revoked'] || time() >= $row['expires']) wp_die(esc_html__('Download unavailable.', 'dancevault'), '', ['response' => 404]);
+        if (!$row || $row['revoked'] || time() >= $row['expires']) wp_die(esc_html__('Download unavailable.', 'cipherparcel'), '', ['response' => 404]);
         $address = filter_var(self::request_string($_SERVER, 'REMOTE_ADDR'), FILTER_VALIDATE_IP) ?: 'unavailable';
         $rate = 'dv_' . hash_hmac('sha256', $id . '|' . $address, wp_salt('auth'));
         $failures = (int) get_transient($rate);
-        if ($failures >= 10) wp_die(esc_html__('Try again later.', 'dancevault'), '', ['response' => 429]);
+        if ($failures >= 10) wp_die(esc_html__('Try again later.', 'cipherparcel'), '', ['response' => 429]);
         if (sanitize_text_field(self::request_string($_SERVER, 'REQUEST_METHOD')) !== 'POST') {
             header('Content-Type: text/html; charset=UTF-8');
-            echo '<!doctype html><html lang="' . esc_attr(get_bloginfo('language')) . '"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' . esc_html__('Protected download — DanceVault', 'dancevault') . '</title><body><main><h1>' . esc_html__('Protected download', 'dancevault') . '</h1><form method="post"><label>' . esc_html__('Password', 'dancevault') . ' <input type="password" name="password" maxlength="128" required autocomplete="off"></label><button type="submit">' . esc_html__('Download file', 'dancevault') . '</button></form></main></body></html>';
+            echo '<!doctype html><html lang="' . esc_attr(get_bloginfo('language')) . '"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' . esc_html__('Protected download — CipherParcel', 'cipherparcel') . '</title><body><main><h1>' . esc_html__('Protected download', 'cipherparcel') . '</h1><form method="post"><label>' . esc_html__('Password', 'cipherparcel') . ' <input type="password" name="password" maxlength="128" required autocomplete="off"></label><button type="submit">' . esc_html__('Download file', 'cipherparcel') . '</button></form></main></body></html>';
             exit;
         }
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Public recipients need the file password, not a WordPress user session/nonce; requests reveal no plaintext without it.
         $password = self::request_string($_POST, 'password');
         if (strlen($password) > 128 || !wp_check_password($password, $row['password_hash'])) {
             set_transient($rate, $failures + 1, 15 * MINUTE_IN_SECONDS);
-            wp_die(esc_html__('Incorrect password.', 'dancevault'), '', ['response' => 403]);
+            wp_die(esc_html__('Incorrect password.', 'cipherparcel'), '', ['response' => 403]);
         }
         $input = null; $plain = null;
         try {
@@ -243,7 +243,7 @@ final class DanceVault_Plugin {
             if (is_resource($input)) fclose($input);
             // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Remove any private temporary plaintext before returning an error.
             if (is_resource($plain)) fclose($plain);
-            wp_die(esc_html__('Download unavailable.', 'dancevault'), '', ['response' => 503]);
+            wp_die(esc_html__('Download unavailable.', 'cipherparcel'), '', ['response' => 503]);
         }
     }
 }

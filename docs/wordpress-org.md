@@ -8,10 +8,18 @@ runtime service, tracking, premium feature gate or remote executable dependency.
 
 Before submission, verify the exact package/source/checksum, official Plugin Check
 artifact, all four real hosting results and the current directory name/eligibility.
-The `dancevault` slug is a request until WordPress.org assigns it; a name search
+The `cipherparcel` slug is a request until WordPress.org assigns it; a name search
 is not trademark clearance or approval. No submission or listing is claimed by
 source metadata. Follow the account's active-review restrictions and do not create
 another account, withdraw another plugin or change a reviewed name to bypass them.
+
+CipherParcel was selected on 24 October 2026 after the original DanceVault name
+conflicted with active public products. The pre-submission check found no exact
+CipherParcel plugin in the public WordPress.org directory, no exact public GitHub
+repository, and no exact product or project in quoted web searches. This is a
+bounded availability check, not trademark clearance; repeat it immediately before
+submission. Internal `dancevault` storage, action, route and PHP identifiers remain
+unchanged so existing encrypted records stay compatible.
 
 ## Reviewable scanner context
 

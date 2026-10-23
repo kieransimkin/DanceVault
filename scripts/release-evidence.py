@@ -7,7 +7,7 @@ import re
 
 root = Path(__file__).resolve().parents[1]
 version = re.search(r'^ \* Version: (\d+\.\d+\.\d+)$', (root / 'dancevault.php').read_text(), re.M).group(1)
-package = root / f'dist/dancevault-{version}-wordpress.zip'
+package = root / f'dist/cipherparcel-{version}-wordpress.zip'
 digest = hashlib.sha256(package.read_bytes()).hexdigest()
 reports = [json.loads(p.read_text()) for p in (root / 'hosting-evidence').glob('*/acceptance.json')]
 expected = {('apache', '6.7', '8.0'), ('nginx', '6.7', '8.0'), ('apache', '7.1.3', '8.3'), ('nginx', '7.1.3', '8.3')}
@@ -28,7 +28,7 @@ for report in reports:
 source = os.environ.get('GITHUB_SHA', '')
 assert re.fullmatch('[a-f0-9]{40}', source), 'Exact CI source identity required'
 rows = '\n'.join(f"| {r['backend']} | {r['wordpress']} | {r['php']} | {r['count']} |" for r in sorted(reports, key=lambda r: (r['wordpress'], r['backend'])))
-notes = f"""DanceVault {version}
+notes = f"""CipherParcel {version}
 
 Website: https://kieransimkin.co.uk/danceflow/
 

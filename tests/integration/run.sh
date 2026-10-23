@@ -24,7 +24,7 @@ cp -a "$DV_STATE/core/wordpress/." "$DV_STATE/www/"
 php "$DV_STATE/wp-cli.phar" core verify-checksums --path="$DV_STATE/www" --version="$DV_WORDPRESS_VERSION"
 php "$DV_STATE/wp-cli.phar" config create --path="$DV_STATE/www" --dbname=vault_test --dbuser=vault_test --dbpass=synthetic-database-only --dbhost=db --skip-check --skip-salts
 openssl req -x509 -newkey rsa:2048 -sha256 -nodes -days 2 -keyout "$DV_STATE/tls/key.pem" -out "$DV_STATE/tls/cert.pem" -subj '/CN=localhost' -addext 'subjectAltName=DNS:localhost,IP:127.0.0.1' 2>/dev/null
-unzip -q "$root"/dist/dancevault-*-wordpress.zip -d "$DV_STATE/www/wp-content/plugins"
+unzip -q "$root"/dist/cipherparcel-*-wordpress.zip -d "$DV_STATE/www/wp-content/plugins"
 printf 'Public media control; must remain unchanged.\n' > "$DV_STATE/www/public-control.txt"
 mkdir -p "$DV_STATE/www/wp-content/uploads"
 cp "$DV_STATE/www/public-control.txt" "$DV_STATE/www/wp-content/uploads/public-control.txt"
@@ -35,7 +35,7 @@ service=apache
 wp=("${compose[@]}" exec -T --user www-data "$service" php /tools/wp-cli.phar --path=/var/www/html)
 "${wp[@]}" core install --url=https://localhost:18843 --title='DanceVault disposable acceptance' --admin_user=vault-admin --admin_password='synthetic-admin-only-Strong-123' --admin_email=fixture@example.invalid --skip-email
 "${wp[@]}" user create vault-editor editor@example.invalid --role=editor --user_pass='synthetic-editor-only-Strong-123'
-"${wp[@]}" plugin activate dancevault
+"${wp[@]}" plugin activate cipherparcel
 "${wp[@]}" eval-file /harness/control.php setup
 "${wp[@]}" core version > "$DV_STATE/evidence/wordpress-version.txt"
 "${compose[@]}" images > "$DV_STATE/evidence/container-images.txt"

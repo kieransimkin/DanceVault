@@ -7,14 +7,14 @@ $taskVersion = $taskMatch.Groups[1].Value
 $taskDist = Join-Path $taskRoot 'dist'
 New-Item -ItemType Directory -Force -Path $taskDist | Out-Null
 Add-Type -AssemblyName System.IO.Compression
-$taskZipName = "dancevault-$taskVersion-wordpress.zip"
+$taskZipName = "cipherparcel-$taskVersion-wordpress.zip"
 $taskZipPath = Join-Path $taskDist $taskZipName
 if (Test-Path -LiteralPath $taskZipPath) { throw 'Package already exists. Preserve immutable candidates; use a fresh version.' }
 $taskStream = [IO.File]::Open($taskZipPath, [IO.FileMode]::CreateNew)
 $taskZip = [IO.Compression.ZipArchive]::new($taskStream, [IO.Compression.ZipArchiveMode]::Create)
 try {
     foreach ($taskRelative in @('dancevault.php','src/crypto.php','readme.txt','license.txt','README.md','AGENTS.md','CONTRIBUTING.md','LICENSE.md','CHANGELOG.md','docs/hosting-acceptance.md','server/nginx.conf.example','docs/branding/logo.svg','docs/branding/logo-monochrome.svg','docs/branding/logo.png','docs/branding/README.md')) {
-        $taskEntry = $taskZip.CreateEntry('dancevault/' + $taskRelative)
+        $taskEntry = $taskZip.CreateEntry('cipherparcel/' + $taskRelative)
         $taskEntry.LastWriteTime = [DateTimeOffset]::new(2026,10,8,0,0,0,[TimeSpan]::Zero)
         $taskInput = [IO.File]::OpenRead((Join-Path $taskRoot $taskRelative))
         $taskOutput = $taskEntry.Open()

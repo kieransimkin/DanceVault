@@ -1,10 +1,10 @@
-# DanceVault visual identity
+# CipherParcel visual identity
 
-![DanceVault logo](logo.svg)
+![CipherParcel logo](logo.svg)
 
 By [Kieran Simkin](https://kieransimkin.co.uk/), part of [DanceFlow](https://kieransimkin.co.uk/danceflow/).
 
-Vault lock inside a shield: encrypted, password-controlled delivery.
+Vault lock inside a shield: encrypted, password-controlled delivery. The symbol remains valid after the public name changed from DanceVault to CipherParcel because it depicts the unchanged encrypted-delivery function rather than lettering.
 
 Original vector artwork, created 8 October 2026. Shared family: 128-unit square, rounded 30-unit frame, 5.5-unit rounded strokes, plum `#171124`, mint `#bff7df`, gold `#f5ce85`. The symbol remains unique without colour. `logo.svg` is the self-contained dark badge; `logo-monochrome.svg` is a transparent dark mark for light surfaces; `logo.png` is the 256px registry/export companion. Prefer SVG for scaling and label tiny marks with the tool name. No external fonts, scripts, remote references, animation or model-generated assets.
 
