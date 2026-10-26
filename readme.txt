@@ -4,7 +4,7 @@ Tags: encrypted downloads, password protection, private files, file sharing, dow
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -43,7 +43,7 @@ Agents should inspect all relevant capabilities, use the tool where it fits, and
 
 1. Install the matching CipherParcel release ZIP and activate CipherParcel. This does not upload any files automatically.
 2. Require HTTPS and PHP sodium. Keep PHP upload and system temporary directories outside every served root. Keep PHP error display off and ensure enough private temporary disk space.
-3. On Apache, permit the generated directory-scoped Require all denied rule or configure an equivalent. On nginx, adapt server/nginx.conf.example to the actual uploads path, aliases and origins. Exclude the password/download endpoint from page, proxy and CDN caching.
+3. On Apache, permit the generated directory-scoped Require all denied rule or configure an equivalent. On nginx, adapt the rule in docs/hosting-acceptance.md to the actual uploads path, aliases and origins. Exclude the password/download endpoint from page, proxy and CDN caching.
 4. Follow docs/hosting-acceptance.md using a synthetic file: verify byte/hash identity, wrong-password denial, expiry/revocation, direct-URL protection, temporary-file cleanup and unaffected public files.
 5. Open Tools -> CipherParcel, choose a file, label, unique 16-128-character password and expiry. Share the recipient URL and password privately, preferably using separate channels.
 
@@ -59,7 +59,7 @@ No. It denies future requests; it cannot stop a download already running, recove
 
 = Does nginx use the generated .htaccess file? =
 
-No. Configure the included scoped nginx rule and test every served alias/origin. Authenticated encryption protects container contents, while direct-access denial is additional protection.
+No. Configure the scoped nginx rule documented in the packaged hosting guide and test every served alias/origin. Authenticated encryption protects container contents, while direct-access denial is additional protection.
 
 = Are there limits on uploads or password attempts? =
 
@@ -70,6 +70,11 @@ Uploads are limited to 100 MiB, with no chunk/resume/Range support. Host limits 
 No. The maintained suite verifies real isolated WordPress TLS/HTTP behaviour on Apache and nginx at the declared compatibility floor and current tested versions. This does not replace destination-host acceptance or an independent security audit.
 
 == Changelog ==
+
+= 1.0.3 =
+* Use the verified WordPress.org author profile for the plugin Author URI.
+* Keep host-specific server configuration examples in the source repository and out of the WordPress.org distribution ZIP.
+* Document the required nginx rule in the packaged hosting guide and reject source-only server files during package verification.
 
 = 1.0.2 =
 * Adopt the distinct public name CipherParcel and requested directory slug cipherparcel after a fresh WordPress.org, GitHub and exact-web name check.
@@ -84,6 +89,9 @@ No. The maintained suite verifies real isolated WordPress TLS/HTTP behaviour on 
 * Add real WordPress/Apache/nginx hosting acceptance, scalar request validation and private error-response cache headers.
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+Directory-package correction only. Runtime behaviour and existing DanceVault encrypted records remain unchanged.
 
 = 1.0.2 =
 Public identity changes to CipherParcel. Existing DanceVault encrypted files, database keys, record names and administrator routes remain compatible.

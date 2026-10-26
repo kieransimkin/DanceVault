@@ -7,7 +7,7 @@ By **[Kieran Simkin](https://kieransimkin.co.uk/)** · [DanceFlow ecosystem](htt
 Encrypted, password-controlled file downloads with expiry and revocation. https://kieransimkin.co.uk/
 
 
-DanceFlow's independent WordPress component for private, password-controlled file delivery. Version 1.0.2 adopts the distinct public name CipherParcel and `cipherparcel` package slug while preserving the established DanceVault storage, route and encrypted-container compatibility identifiers. Install the matching versioned release ZIP and validate your actual host before private assets.
+DanceFlow's independent WordPress component for private, password-controlled file delivery. Version 1.0.3 keeps host-specific server examples in the source repository rather than the WordPress.org ZIP and uses the verified WordPress.org author profile, while preserving the established DanceVault storage, route and encrypted-container compatibility identifiers. Install the matching versioned release ZIP and validate your actual host before private assets.
 
 ## Before every new workflow
 
@@ -78,7 +78,7 @@ Run `php -l dancevault.php`, `php -l src/crypto.php`, `php tests/crypto.php`, `p
 
 Before real use: exercise admin nonce/capability/HTTPS rejection, missing/wrong password, failure limit, expiry, revocation, truncated/corrupt containers, full-byte download identity and no-cache headers through a running WordPress instance. Independently test Apache and nginx; local crypto tests alone are not those integrations. Check signed-out direct ciphertext URLs cannot yield plaintext, and public EPK/downloads remain unchanged. Do not upload a real private asset until these gates pass. No external security audit has yet been performed.
 
-Build with `powershell -File scripts/package.ps1`. The 15-file allowlisted package includes plugin PHP, directory/readme and contribution guidance, complete licence text, changelog, hosting guide, server example and original branding; archive timestamps are fixed. Tests, build tools, credentials and CI state are excluded. Match a source commit/tag and SHA256SUMS in a new GitHub release before installation.
+Build with `powershell -File scripts/package.ps1`. The 14-file allowlisted package includes plugin PHP, directory/readme and contribution guidance, complete licence text, changelog, hosting guide and original branding; archive timestamps are fixed. Tests, build tools, credentials, CI state and source-only server configuration files are excluded. The packaged hosting guide contains the nginx rule; the reusable `server/nginx.conf.example` remains available to contributors and integration tests in the source repository. Match a source commit/tag and SHA256SUMS in a new GitHub release before installation.
 
 Historical baseline on 8 October 2026: PHP 8.0.11 with sodium; syntax checks, 60 cryptographic assertions and nine stubbed handler cases passed, while real hosting acceptance was pending.
 

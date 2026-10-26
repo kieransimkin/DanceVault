@@ -2,11 +2,11 @@
 /**
  * Plugin Name: CipherParcel
  * Description: Encrypted, password-controlled file downloads with expiry and revocation. https://kieransimkin.co.uk/
- * Version: 1.0.2
+ * Version: 1.0.3
  * Requires at least: 6.7
  * Requires PHP: 8.0
  * Plugin URI: https://github.com/kieransimkin/DanceVault
- * Author URI: https://kieransimkin.co.uk/
+ * Author URI: https://profiles.wordpress.org/kieransimkin0/
  * Author: Kieran Simkin
  * License: GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html

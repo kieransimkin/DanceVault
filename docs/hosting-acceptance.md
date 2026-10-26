@@ -72,11 +72,21 @@ host that puts incoming PHP upload temporary files in a public directory before
 the plugin runs. Keep PHP error display off and operational logs private.
 
 On Apache, allow the directory's `Require all denied` rule (or configure the
-equivalent explicitly). On nginx, adapt `server/nginx.conf.example` to the site's
-actual uploads location and any aliases/subdirectory. That rule is defence in
-depth; nginx does not read `.htaccess`. Do not expose an alternate unprotected
-listener, direct origin or public storage alias. The integration listener on
-18844 is an intentional negative fixture, **not** deployment configuration.
+equivalent explicitly). On nginx, adapt this scoped rule to the site's actual
+uploads location and any aliases/subdirectory:
+
+```nginx
+location ^~ /wp-content/uploads/dancevault-encrypted/ {
+    return 404;
+}
+```
+
+The reusable `server/nginx.conf.example` remains in the source repository for
+contributors and integration tests but is deliberately excluded from the
+WordPress.org distribution ZIP. The rule is defence in depth; nginx does not read
+`.htaccess`. Do not expose an alternate unprotected listener, direct origin or
+public storage alias. The integration listener on 18844 is an intentional
+negative fixture, **not** deployment configuration.
 
 Exclude the password/download endpoint from proxy/CDN/page caching and honour
 `Cache-Control: private, no-store`. Independently repeat the small synthetic
