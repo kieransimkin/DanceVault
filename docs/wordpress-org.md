@@ -57,6 +57,13 @@ Plugin Check reports an unexpected-markdown warning, retain it as context for
 human review rather than hiding or excluding the file. Reviewers may request a
 different treatment; evaluate the actual finding without bypassing checks.
 
+Host-specific server configuration examples remain in the public source
+repository for contributors and integration tests, not in the WordPress.org
+distribution ZIP. The packaged hosting guide contains the equivalent nginx rule
+for administrators. Package verification rejects `server/`, `.conf` and
+`.example` entries so a source-only sample cannot silently return to the
+directory archive.
+
 ## Publication after approval
 
 Submission, automated scan, human approval, assigned SVN access, SVN upload and

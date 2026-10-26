@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.3 - 2026-10-26
+
+- Use Kieran Simkin's verified WordPress.org profile for the plugin Author URI, avoiding reliance on the project site's TLS availability during directory review.
+- Keep the nginx configuration example in the source repository while excluding source-only server files from the WordPress.org distribution ZIP.
+- Put the required nginx deny rule directly in the packaged hosting guide and make package verification reject server, `.conf` and `.example` entries.
+- Preserve the plugin runtime, encrypted container format, keys, records, routes and stored files unchanged.
+
 ## 1.0.2 - 2026-10-24
 
 - Rename the public plugin identity to CipherParcel and package it under the requested `cipherparcel` directory slug after fresh WordPress.org, GitHub and exact-web availability checks.

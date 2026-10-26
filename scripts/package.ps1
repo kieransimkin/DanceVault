@@ -13,7 +13,10 @@ if (Test-Path -LiteralPath $taskZipPath) { throw 'Package already exists. Preser
 $taskStream = [IO.File]::Open($taskZipPath, [IO.FileMode]::CreateNew)
 $taskZip = [IO.Compression.ZipArchive]::new($taskStream, [IO.Compression.ZipArchiveMode]::Create)
 try {
-    foreach ($taskRelative in @('dancevault.php','src/crypto.php','readme.txt','license.txt','README.md','AGENTS.md','CONTRIBUTING.md','LICENSE.md','CHANGELOG.md','docs/hosting-acceptance.md','server/nginx.conf.example','docs/branding/logo.svg','docs/branding/logo-monochrome.svg','docs/branding/logo.png','docs/branding/README.md')) {
+    # Keep host-specific server examples in source control, not in the
+    # WordPress.org distribution. The packaged hosting guide contains the
+    # equivalent nginx rule that administrators need to adapt.
+    foreach ($taskRelative in @('dancevault.php','src/crypto.php','readme.txt','license.txt','README.md','AGENTS.md','CONTRIBUTING.md','LICENSE.md','CHANGELOG.md','docs/hosting-acceptance.md','docs/branding/logo.svg','docs/branding/logo-monochrome.svg','docs/branding/logo.png','docs/branding/README.md')) {
         $taskEntry = $taskZip.CreateEntry('cipherparcel/' + $taskRelative)
         $taskEntry.LastWriteTime = [DateTimeOffset]::new(2026,10,8,0,0,0,[TimeSpan]::Zero)
         $taskInput = [IO.File]::OpenRead((Join-Path $taskRoot $taskRelative))

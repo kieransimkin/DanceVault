@@ -14,8 +14,13 @@ if ($taskManifest -cne "$taskHash  $taskName`n") { throw 'Checksum mismatch' }
 Add-Type -AssemblyName System.IO.Compression
 $taskZip = [IO.Compression.ZipArchive]::new([IO.File]::OpenRead($taskPath))
 try {
-    $taskExpected = @('dancevault.php','src/crypto.php','readme.txt','license.txt','README.md','AGENTS.md','CONTRIBUTING.md','LICENSE.md','CHANGELOG.md','docs/hosting-acceptance.md','server/nginx.conf.example','docs/branding/logo.svg','docs/branding/logo-monochrome.svg','docs/branding/logo.png','docs/branding/README.md')
+    $taskExpected = @('dancevault.php','src/crypto.php','readme.txt','license.txt','README.md','AGENTS.md','CONTRIBUTING.md','LICENSE.md','CHANGELOG.md','docs/hosting-acceptance.md','docs/branding/logo.svg','docs/branding/logo-monochrome.svg','docs/branding/logo.png','docs/branding/README.md')
     if ($taskZip.Entries.Count -ne $taskExpected.Count) { throw 'Unexpected archive entries' }
+    foreach ($taskEntry in $taskZip.Entries) {
+        if ($taskEntry.FullName -like 'cipherparcel/server/*' -or $taskEntry.FullName -like '*.conf' -or $taskEntry.FullName -like '*.example') {
+            throw "Source-only server configuration in WordPress.org package: $($taskEntry.FullName)"
+        }
+    }
     foreach ($taskRelative in $taskExpected) {
         $taskEntry = $taskZip.GetEntry('cipherparcel/' + $taskRelative)
         if (!$taskEntry) { throw "Missing $taskRelative" }
