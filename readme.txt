@@ -4,7 +4,7 @@ Tags: encrypted downloads, password protection, private files, file sharing, dow
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -70,6 +70,9 @@ Uploads are limited to 100 MiB, with no chunk/resume/Range support. Host limits 
 No. The maintained suite verifies real isolated WordPress TLS/HTTP behaviour on Apache and nginx at the declared compatibility floor and current tested versions. This does not replace destination-host acceptance or an independent security audit.
 
 == Changelog ==
+
+= 1.0.4 =
+* Normalize source text to LF for stable cross-platform package hashes while keeping Windows command scripts CRLF.
 
 = 1.0.3 =
 * Use the verified WordPress.org author profile for the plugin Author URI.

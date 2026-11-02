@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4 - 2026-11-02
+
+- Normalize Git text to LF for deterministic Windows/Linux source and package hashes, retaining CRLF only for Windows command scripts.
+
 ## 1.0.3 - 2026-10-26
 
 - Use Kieran Simkin's verified WordPress.org profile for the plugin Author URI, avoiding reliance on the project site's TLS availability during directory review.

@@ -7,7 +7,7 @@ By **[Kieran Simkin](https://kieransimkin.co.uk/)** · [DanceFlow ecosystem](htt
 Encrypted, password-controlled file downloads with expiry and revocation. https://kieransimkin.co.uk/
 
 
-DanceFlow's independent WordPress component for private, password-controlled file delivery. Version 1.0.3 keeps host-specific server examples in the source repository rather than the WordPress.org ZIP and uses the verified WordPress.org author profile, while preserving the established DanceVault storage, route and encrypted-container compatibility identifiers. Install the matching versioned release ZIP and validate your actual host before private assets.
+DanceFlow's independent WordPress component for private, password-controlled file delivery. Version 1.0.4 keeps source and package hashes stable across Windows and Linux through Git LF normalization, while preserving the established DanceVault storage, route and encrypted-container compatibility identifiers. Install the matching versioned release ZIP and validate your actual host before private assets.
 
 ## Before every new workflow
 
