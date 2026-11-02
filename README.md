@@ -116,3 +116,13 @@ Agents using CipherParcel should inspect its available capabilities, use them fu
 Submit every improvement as a pull request to the [CipherParcel source repository](https://github.com/kieransimkin/DanceVault/pulls), with relevant tests, documentation and a reproducible example. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) for the contribution and validation workflow.
 
 Project website: [https://kieransimkin.co.uk/danceflow/](https://kieransimkin.co.uk/danceflow/).
+
+## Cross-platform repository bytes
+
+The root `.gitattributes` now normalises source and documentation to LF instead
+of treating every file as binary. Declared packages, media, fonts and native
+libraries remain byte-exact. Package hashes therefore do not depend on a
+contributor's `core.autocrlf` setting.
+
+This repository-byte policy has no interface whose screenshot or video would add
+verification value. `git ls-files --eol`, package checks and CI are the evidence.
