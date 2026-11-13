@@ -1,0 +1,92 @@
+name: Publish verified CipherParcel release to WordPress.org
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Exact approved GitHub release tag
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: cipherparcel-wordpress-directory
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      version: ${{ steps.package.outputs.version }}
+    steps:
+      - name: Resolve exact tested release
+        id: release
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          [[ "$RELEASE_TAG" =~ ^v[1-9][0-9]*\.[0-9]+\.[0-9]+$ ]]
+          if [[ "$GITHUB_REF" != refs/heads/master && "$GITHUB_REF" != "refs/tags/$RELEASE_TAG" ]]; then exit 1; fi
+          version="${RELEASE_TAG#v}"
+          sha=$(gh api "repos/$GH_REPO/commits/$RELEASE_TAG" --jq .sha)
+          [[ "$sha" =~ ^[a-f0-9]{40}$ ]]
+          gh release view "$RELEASE_TAG" --json isDraft,isPrerelease | jq -e '.isDraft == false and .isPrerelease == false'
+          gh release download "$RELEASE_TAG" --dir dist \
+            --pattern "cipherparcel-$version-wordpress.zip" \
+            --pattern "SHA256SUMS-$version.txt" --pattern acceptance-summary.json
+          digest=$(sha256sum "dist/cipherparcel-$version-wordpress.zip" | cut -d' ' -f1)
+          jq -e --arg version "$version" --arg sha "$sha" --arg digest "$digest" \
+            '.version == $version and .source == $sha and .zip_sha256 == $digest and (.hosting | length == 4)' dist/acceptance-summary.json
+          if [[ "$GITHUB_EVENT_NAME" == workflow_dispatch ]]; then
+            gh run list --workflow ci-release.yml --commit "$sha" --branch "$RELEASE_TAG" \
+              --event push --status success --limit 10 --json headSha,headBranch |
+              jq -e --arg sha "$sha" --arg tag "$RELEASE_TAG" 'any(.[]; .headSha == $sha and .headBranch == $tag)'
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ steps.release.outputs.sha }}
+          path: source
+          persist-credentials: false
+      - name: Verify packaged source and stage directory files
+        id: package
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Move-Item -LiteralPath dist -Destination source/dist
+          ./source/scripts/verify-package.ps1 -ExpectedTag $env:RELEASE_TAG
+          $version = $env:RELEASE_TAG.Substring(1)
+          Expand-Archive -LiteralPath "source/dist/cipherparcel-$version-wordpress.zip" -DestinationPath wordpress-build
+          "version=$version" >> $env:GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-wordpress-directory-files
+          path: wordpress-build/
+          if-no-files-found: error
+  publish:
+    needs: verify
+    if: vars.WPORG_PLUGIN_APPROVED == 'true' && vars.WPORG_PLUGIN_SLUG == 'cipherparcel'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: wordpress-org
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: verified-wordpress-directory-files
+          path: wordpress-build/
+      - uses: 10up/action-wordpress-plugin-deploy@54bd289b8525fd23a5c365ec369185f2966529c2
+        env:
+          SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
+          SLUG: cipherparcel
+          VERSION: ${{ needs.verify.outputs.version }}
+          BUILD_DIR: wordpress-build/cipherparcel

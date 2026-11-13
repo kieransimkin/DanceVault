@@ -126,3 +126,19 @@ contributor's `core.autocrlf` setting.
 
 This repository-byte policy has no interface whose screenshot or video would add
 verification value. `git ls-files --eol`, package checks and CI are the evidence.
+
+### WordPress.org directory release
+
+The directory workflow publishes the verified GitHub release ZIP. Dispatch
+**Publish verified CipherParcel release to WordPress.org** from `master` with
+the approved release tag to verify an existing package. The workflow checks
+successful tag CI, the release evidence, and the ZIP contents against tagged
+source before staging the directory files.
+
+Store `WPORG_SVN_USERNAME` and `WPORG_SVN_PASSWORD` in the repository’s
+`wordpress-org` environment. Set repository variable `WPORG_PLUGIN_SLUG`
+to `cipherparcel`. Enable `WPORG_PLUGIN_APPROVED` only after WordPress.org
+approval and verification of the exact package. Once enabled, successful
+stable release tags invoke the same publisher. Verify the SVN tag, public
+listing and extracted directory download against the release ZIP after each
+publication.
