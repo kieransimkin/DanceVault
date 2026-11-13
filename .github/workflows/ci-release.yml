@@ -149,3 +149,13 @@ jobs:
           mkdir -p verification
           gh release download "$RELEASE_TAG" --dir verification
           (cd verification && sha256sum -c "SHA256SUMS-$version.txt")
+
+  wordpress-directory:
+    needs: publish
+    if: vars.WPORG_PLUGIN_APPROVED == 'true' && vars.WPORG_PLUGIN_SLUG == 'cipherparcel'
+    permissions:
+      actions: read
+      contents: read
+    uses: ./.github/workflows/wordpress-directory.yml
+    with:
+      tag: ${{ github.ref_name }}
